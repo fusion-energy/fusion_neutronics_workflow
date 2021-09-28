@@ -1,34 +1,34 @@
 # This Dockerfile creates an enviroment / dependancies needed to run the
-# neutronics-workflow.
+# fusion-neutronics-workflow.
 
 # This Dockerfile can be build locally or a prebuild image can be downloaded
 
 # To download the prebuild image
-# docker pull ghcr.io/fusion-energy/neutronics-workflow
+# docker pull ghcr.io/fusion-energy/fusion-neutronics-workflow
 
 # To build this Dockerfile into a docker image:
-# docker build -t neutronics-workflow .
+# docker build -t fusion-neutronics-workflow .
 
 # To build this Dockerfile and use multiple cores to compile:
-# docker build -t neutronics-workflow --build-arg compile_cores=7 .
+# docker build -t fusion-neutronics-workflow --build-arg compile_cores=7 .
 
 # To run the locally built Docker image:
-# docker run -it neutronics-workflow
+# docker run -it fusion-neutronics-workflow
 
 # To run the prebuilt Docker image:
-# docker run -it ghcr.io/fusion-energy/neutronics-workflow
+# docker run -it ghcr.io/fusion-energy/fusion-neutronics-workflow
 
 # Run with the following command for a shared folder between base OS and the
 # locally built docker image
-# docker run -it -v $PWD:/local_dir neutronics-workflow
+# docker run -it -v $PWD:/local_dir fusion-neutronics-workflow
 
 # Run with the following command for a shared folder between base OS and the
 # locally built docker image
-# docker run -it -v $PWD:/local_dir neutronics-workflow
+# docker run -it -v $PWD:/local_dir fusion-neutronics-workflow
 
 # Run with the following command for a shared folder between base OS and the
 # prebuild docker image
-# docker run -it -v $PWD:/local_dir ghcr.io/fusion-energy/neutronics-workflow
+# docker run -it -v $PWD:/local_dir ghcr.io/fusion-energy/fusion-neutronics-workflow
 
 # TODO save build time by basing this on FROM ghcr.io/fusion-energy/paramak:latest
 # This can't be done currently as the base images uses conda installs for moab / dagmc which don't compile with OpenMC
@@ -215,13 +215,13 @@ ENV OPENMC_CROSS_SECTIONS=/nuclear_data/cross_sections.xml
 ENV PATH="/MOAB/build/bin:${PATH}"
 ENV PATH="/DAGMC/bin:${PATH}"
 
-RUN mkdir /home/neutronics-workflow
+RUN mkdir /home/fusion-neutronics-workflow
 EXPOSE 8888
-WORKDIR /home/neutronics-workflow
+WORKDIR /home/fusion-neutronics-workflow
 
 
 
-FROM ghcr.io/fusion-energy/neutronics-workflow:dependencies as final
+FROM ghcr.io/fusion-energy/fusion-neutronics-workflow:dependencies as final
 
 COPY example_01_single_volume_cell_tally example_01_single_volume_cell_tally/
 COPY example_02_multi_volume_cell_tally example_02_multi_volume_cell_tally/
