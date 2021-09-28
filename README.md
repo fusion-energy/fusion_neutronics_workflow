@@ -27,15 +27,15 @@ that is:
 
 The Dockerfile can build locally or a prebuilt one can be downloaded with
 ```bash
-docker pull ghcr.io/fusion-energy/neutronics-workflow
+docker pull ghcr.io/fusion-energy/fusion-neutronics-workflow
 ```
 
 The docker image can then be run with
 ```bash
-docker run -it ghcr.io/fusion-energy/neutronics-workflow
+docker run -it ghcr.io/fusion-energy/fusion-neutronics-workflow
 ```
 
-Links to the packages that are utilized by the neutronics-workflow
+Links to the packages that are utilized by the fusion-neutronics-workflow
 
 <!--TODO * `stl_to_h5m <https://github.com/fusion-energy/stl_to_h5m) allows automated conversion of stl files to h5m files compatible with DAGMC enabled neutronics codes. -->
 
