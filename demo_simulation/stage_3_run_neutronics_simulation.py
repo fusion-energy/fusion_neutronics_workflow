@@ -44,7 +44,7 @@ my_source = ops.TokamakSource(
 
 settings = openmc.Settings()
 settings.source = my_source.sources
-settings.batches = 60
+settings.batches = 10
 settings.particles = int(1e4)
 settings.run_mode = "fixed source"
 settings.inactive = 0
@@ -70,10 +70,18 @@ geometry = odw.Geometry(
 # parts/s = 3200
 # tally = odw.TetMeshTally('(n,Xa)', filename='stage_2_output/mesh_custom.h5m')
 # parts/s = 71
-tally = odw.MeshTally2D(
-    '(n,Xa)', plane="xz",
-    bounding_box=[(800-700, -1, -700), (800+700, 1, 700)])
+size_voxel = 10  # cm
+# tally = odw.MeshTally2D(
+#     '(n,Xa)', plane="xz",
+#     bounding_box=[(550, -1, -700), (1250, 1, 700)],
+#     mesh_resolution=[int(1400/size_voxel), int((1250-550)/size_voxel)]  # Z X
+# )
 # parts/s = 3k
+tally = odw.MeshTally3D(
+    '(n,Xa)',
+    bounding_box=[(550, 0, -700), (1250, 200, 700)],
+    mesh_resolution=[int(1400/size_voxel), int(200/size_voxel), int((1250-550)/size_voxel)]
+)
 
 neutronics_model = openmc.Model(
     geometry=geometry,
