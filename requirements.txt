@@ -1,5 +1,5 @@
 
-paramak=0.6.2
-openmc-dagmc-wrapper=0.2.2
-openmc-plasma-source=0.2.1
-cad_to_h5m=0.2.1
+paramak==0.6.2
+openmc-dagmc-wrapper==0.2.2
+openmc-plasma-source==0.2.1
+cad_to_h5m==0.2.1
