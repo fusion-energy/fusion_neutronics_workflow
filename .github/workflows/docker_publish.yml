@@ -67,6 +67,9 @@ jobs:
         with:
           push: true
           tags: ghcr.io/fusion-energy/fusion-neutronics-workflow
+          build-args: |
+            cq_version=2.1
+            compile_cores=2
 
   upload_workflow_output_files_to_release:
     # needs: build_and_push_release
