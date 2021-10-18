@@ -48,4 +48,9 @@ my_model = openmc.Model(
 )
 statepoint_file = my_model.run()
 
-odw.process_results(statepoint_file, fusion_power=1e9)
+statepoint = openmc.statepoint(statepoint_file)
+
+# gets the second tally using its name
+my_tally = statepoint.get_tally(name="blanket_TBR")
+
+print(my_tally)
