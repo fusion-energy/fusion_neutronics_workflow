@@ -1,4 +1,3 @@
-
 # This minimal example makes a 3D volume and exports the shape to a stp file
 # A surrounding volume called a graveyard is needed for neutronics simulations
 
@@ -7,16 +6,11 @@ from cad_to_h5m import cad_to_h5m
 
 
 my_shape = paramak.ExtrudeStraightShape(
-    points=[
-        (400, 100),
-        (400, 200),
-        (600, 200),
-        (600, 100)
-        ],
-    distance = 180,
+    points=[(400, 100), (400, 200), (600, 200), (600, 100)],
+    distance=180,
 )
 
-my_shape.export_stp('steel.stp')
+my_shape.export_stp("steel.stp")
 
 # This script converts the CAD stp files generated into h5m files that can be
 # used in DAGMC enabled codes. h5m files created in this way are imprinted,
@@ -25,10 +19,9 @@ my_shape.export_stp('steel.stp')
 
 cad_to_h5m(
     files_with_tags=[
-        {'cad_filename':'steel.stp', 'material_tag':'mat1'},
+        {"cad_filename": "steel.stp", "material_tag": "mat1"},
     ],
-    h5m_filename='dagmc.h5m',
-    cubit_path='/opt/Coreform-Cubit-2021.5/bin/',
-    # imprint=False, # as there are no geometry contact between volumes
+    h5m_filename="dagmc.h5m",
+    cubit_path="/opt/Coreform-Cubit-2021.5/bin/",
+    imprint=False,  # as there are no geometry contact between volumes
 )
-

@@ -138,3 +138,4 @@ dmypy.json
 *.json
 *.h5m
 *.stp
+*.cub
