@@ -5,6 +5,7 @@
 import openmc
 import openmc_dagmc_wrapper as odw
 import openmc_plasma_source as ops
+import openmc_post_processor as opp
 
 
 # this links the material tags in the dagmc h5m file with materials.
@@ -48,4 +49,22 @@ my_model = openmc.Model(
 )
 statepoint_file = my_model.run()
 
-odw.process_results(statepoint_file, fusion_power=1e9)
+
+# starts the simulation
+statepoint_file = my_model.run()
+
+# loads up the statepoint file with simulation results
+statepoint = opp.StatePoint(filepath=statepoint_file)
+
+# gets the first tally using its name
+my_tally_1 = statepoint.get_tally(name="")
+
+# gets number of neutron for a 1.3 mega joule shot
+source_strength = opp.find_source_strength(fusion_energy_per_second_or_per_pulse=1.3e6)
+
+# converts the flux units of the tally
+result = statepoint.process_tally(
+    source_strength=source_strength,
+    tally=my_tally_1,
+    required_units="n,Xa reactions per cm3",
+)

@@ -48,6 +48,8 @@ my_model = openmc.Model(
 )
 statepoint_file = my_model.run()
 
+# no unit coversion is needed here so the openmc.statepoint reader is used
+# other examples use the openmc_post_processor to convert units.
 statepoint = openmc.statepoint(statepoint_file)
 
 # gets the second tally using its name
