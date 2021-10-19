@@ -4,6 +4,7 @@
 
 import paramak
 from cad_to_h5m import cad_to_h5m
+from stl_to_h5m import stl_to_h5m
 
 my_reactor = paramak.BallReactor(
     inner_bore_radial_thickness=1,
@@ -23,6 +24,8 @@ my_reactor = paramak.BallReactor(
     rotation_angle=360
 )
 
+stl_filenames = my_reactor.export_stl()
+my_reactor.export_stl('entire_geometry.stl')
 stp_filenames = my_reactor.export_stp()
 
 # This script converts the CAD stp files generated into h5m files that can be
@@ -39,10 +42,17 @@ for entry in files_with_tags:
     if entry['cad_filename'] == 'blanket.stp':
         entry['tet_mesh'] = "size 15"
 
+# makes a dagmc geometry that has not been imprinted and merged
+stl_to_h5m(
+    files_with_tags=[(stl_filename, name) for name, stl_filename in zip(my_reactor.name, stl_filenames)],
+    h5m_filename='dagmc_not_merged.h5m',
+)
+
+# makes a dagmc geometry that has been imprinted and merged
 cad_to_h5m(
     files_with_tags=files_with_tags,
     make_watertight=True,
-    h5m_filename='stage_2_output/dagmc.h5m',
+    h5m_filename='dagmc.h5m',
     cubit_path='/opt/Coreform-Cubit-2021.5/bin/',
     cubit_filename='stage_2_output/unstructured_mesh.cub'
 )

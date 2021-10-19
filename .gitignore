@@ -139,3 +139,5 @@ dmypy.json
 *.h5m
 *.stp
 *.cub
+*.stl
+*.png
