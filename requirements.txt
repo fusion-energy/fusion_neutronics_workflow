@@ -4,5 +4,6 @@ openmc-dagmc-wrapper==0.2.3
 openmc-plasma-source==0.2.2
 cad_to_h5m==0.2.3
 stl_to_h5m==0.0.2
+openmc-post_processor==0.0.1
 spectrum_plotter==0.0.1
 regular_mesh_plotter==0.0.1
