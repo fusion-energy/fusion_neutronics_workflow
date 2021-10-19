@@ -140,3 +140,4 @@ dmypy.json
 *.stp
 *.cub
 *.stl
+*.png
