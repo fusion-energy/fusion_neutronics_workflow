@@ -72,7 +72,7 @@ jobs:
             compile_cores=2
 
   upload_workflow_output_files_to_release:
-    # needs: build_and_push_release
+    needs: build_and_push_release
     runs-on: ubuntu-latest
 
     name: 'create_files'
