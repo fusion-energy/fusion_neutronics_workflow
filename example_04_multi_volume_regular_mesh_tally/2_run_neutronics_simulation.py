@@ -38,14 +38,22 @@ tally1 = odw.MeshTally3D(
 )
 
 tally2 = odw.MeshTally2D(
-    tally_type="(n,Xa)", plane="xy", bounding_box=my_h5m_filename
+    tally_type="(n,Xa)",
+    plane="xy",
+    bounding_box=my_h5m_filename
 )
 
-tallies = openmc.Tallies([tally1, tally2])
+tally3 = odw.MeshTally2D(
+    tally_type="(n,Xa)",
+    plane="xz",
+    bounding_box=my_h5m_filename
+)
+
+tallies = openmc.Tallies([tally1, tally2, tally3])
 
 settings = odw.FusionSettings()
 settings.batches = 4
-settings.particles = 1000
+settings.particles = 1000000
 # assigns a ring source of DT energy neutrons to the source using the
 # openmc_plasma_source package
 settings.source = ops.FusionRingSource(fuel="DT", radius=350)
