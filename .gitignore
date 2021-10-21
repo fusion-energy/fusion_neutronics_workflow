@@ -141,3 +141,4 @@ dmypy.json
 *.cub
 *.stl
 *.png
+*.vtk
