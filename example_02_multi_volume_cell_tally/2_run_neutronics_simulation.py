@@ -48,4 +48,11 @@ my_model = openmc.Model(
 )
 statepoint_file = my_model.run()
 
-odw.process_results(statepoint_file, fusion_power=1e9)
+# no unit coversion is needed here so the openmc.statepoint reader is used
+# other examples use the openmc_post_processor to convert units.
+statepoint = openmc.statepoint(statepoint_file)
+
+# gets the second tally using its name
+my_tally = statepoint.get_tally(name="blanket_TBR")
+
+print(my_tally)
