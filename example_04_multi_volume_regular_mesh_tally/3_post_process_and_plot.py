@@ -1,4 +1,3 @@
-
 import openmc_post_processor as opp
 import openmc
 from regular_mesh_plotter import plot_regular_mesh_tally_with_geometry
@@ -19,31 +18,30 @@ my_tally_xz = statepoint.get_tally(name="(n,Xa)_on_2D_mesh_xz")
 source_strength = opp.find_source_strength(fusion_energy_per_second_or_per_pulse=1.3e6)
 
 
-
 plot = plot_regular_mesh_tally_with_geometry(
     tally=my_tally_xy,
-    mesh_file_or_trimesh_object='dagmc_not_merged.h5m',
-    plane_origin = None,
-    plane_normal = [0, 0, 1],
-    rotate_plot = 0,
+    dagmc_file_or_trimesh_object="dagmc_not_merged.h5m",
+    plane_origin=None,
+    plane_normal=[0, 0, 1],
+    rotate_plot=0,
     scale=LogNorm(),
     vmin=None,
     label="picosievert / cm / pulse",
-    filename= 'test.png',
+    filename="test.png",
 )
 
-plot.show()
+# plot.show()
 
 plot = plot_regular_mesh_tally_with_geometry(
     tally=my_tally_xz,
-    mesh_file_or_trimesh_object='dagmc_not_merged.h5m',
-    plane_origin = None,
-    plane_normal = [1, 0, 0],
-    rotate_plot = 90,
+    dagmc_file_or_trimesh_object="dagmc_not_merged.h5m",
+    plane_origin=None,
+    plane_normal=[1, 0, 0],
+    rotate_plot=90,
     scale=LogNorm(),
     vmin=None,
     label="(n,Xa) per pulse",
-    filename= 'my_tally_xz.png',
+    filename="my_tally_xz.png",
 )
 
-plot.show()
+# plot.show()

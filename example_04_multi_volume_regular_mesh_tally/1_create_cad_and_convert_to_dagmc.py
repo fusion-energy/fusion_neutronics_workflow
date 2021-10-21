@@ -34,8 +34,13 @@ my_reactor = paramak.BallReactor(
 # makes a dagmc geometry that has not been imprinted and merged
 
 stl_filenames = my_reactor.export_stl()
+# removes the plasma as this complicates the geometry and has minimal interations with particles
+stl_filenames.remove('plasma.stl')
+compentent_names = my_reactor.name
+compentent_names.remove('plasma')
+
 stl_to_h5m(
-    files_with_tags=[(stl_filename, name) for name, stl_filename in zip(my_reactor.name, stl_filenames)],
+    files_with_tags=[(stl_filename, name) for name, stl_filename in zip(compentent_names, stl_filenames)],
     h5m_filename='dagmc_not_merged.h5m',
 )
 
@@ -44,7 +49,10 @@ stl_to_h5m(
 # makes a dagmc geometry that has been imprinted and merged and requires cubit
 stp_filenames = my_reactor.export_stp()
 
-files_with_tags = [{'cad_filename':stp_filename, 'material_tag':name} for name, stp_filename in zip(my_reactor.name, stp_filenames)]
+# removes the plasma as this complicates the geometry and has minimal interations with particles
+stp_filenames.remove('plasma.stp')
+
+files_with_tags = [{'cad_filename': stp_filename, 'material_tag': name} for name, stp_filename in zip(compentent_names, stp_filenames)]
 # produces a list of dictionaries of with cad_filename and material_tag as the keys.
 # the values are the stp filename and the name of the component
 
@@ -53,5 +61,4 @@ cad_to_h5m(
     make_watertight=True,
     h5m_filename='dagmc.h5m',
     cubit_path='/opt/Coreform-Cubit-2021.5/bin/',
-    cubit_filename='stage_2_output/unstructured_mesh.cub'
 )
