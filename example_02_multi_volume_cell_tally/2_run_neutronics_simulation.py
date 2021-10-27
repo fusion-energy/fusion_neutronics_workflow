@@ -5,35 +5,37 @@
 import openmc
 import openmc_dagmc_wrapper as odw
 import openmc_plasma_source as ops
+import openmc_post_processor as opp
 
+
+geometry = odw.Geometry(h5m_filename="dagmc.h5m")
 
 # this links the material tags in the dagmc h5m file with materials.
 # these materials are input as strings so they will be looked up in the
 # neutronics material maker package
 material_tag_to_material_dict = {
-    'plasma':'DT_plasma',
-    'inboard_tf_coils':'copper',
-    'center_column_shield':'tungsten',
-    'firstwall':'tungsten',
-    'blanket':'Li4SiO4',
-    'blanket_rear_wall':'eurofer',
-    'divertor':'tungsten'
+    "plasma": "DT_plasma",
+    "inboard_tf_coils": "copper",
+    "center_column_shield": "tungsten",
+    "firstwall": "tungsten",
+    "blanket": "Li4SiO4",
+    "blanket_rear_wall": "eurofer",
+    "divertor": "tungsten",
 }
 
-geometry = odw.Geometry(h5m_filename='dagmc.h5m')
-
 materials = odw.Materials(
-    h5m_filename='dagmc.h5m',
-    correspondence_dict=material_tag_to_material_dict
+    h5m_filename="dagmc.h5m", correspondence_dict=material_tag_to_material_dict
 )
 
-tally1 = odw.CellTally(
-    tally_type="TBR",
-    target="blanket",
-    materials=materials
+tally1 = odw.CellTally(tally_type="TBR", target="blanket", materials=materials)
+
+# creates a dose tally for neutrons with the required EnergyFunctionFilter,
+# ParticleFilter, MaterialFilter etc
+tally2 = odw.CellTally(
+    tally_type="neutron_effective_dose", target="firstwall", materials=materials
 )
 
-tallies = openmc.Tallies([tally1])
+tallies = openmc.Tallies([tally1, tally2])
 
 settings = odw.FusionSettings()
 settings.batches = 1
@@ -48,11 +50,20 @@ my_model = openmc.Model(
 )
 statepoint_file = my_model.run()
 
-# no unit coversion is needed here so the openmc.statepoint reader is used
-# other examples use the openmc_post_processor to convert units.
-statepoint = openmc.statepoint(statepoint_file)
+statepoint = openmc.StatePoint(statepoint_file)
 
+print(statepoint.tallies)
 # gets the second tally using its name
-my_tally = statepoint.get_tally(name="blanket_TBR")
+my_tally_1 = statepoint.get_tally(name="blanket_TBR")
 
-print(my_tally)
+# no unit coversion is needed for the TBR (tritium breeding ratio) tally
+print(f'TBR is {my_tally_1}')
+
+
+my_tally_2 = statepoint.get_tally(name="firstwall_neutron_effective_dose")
+
+# returns the tally with normalisation for source strength
+result = opp.process_dose_tally(
+    source_strength=1.3e6, tally=my_tally_2, required_units="Sv cm **2 / second"
+)
+print(f"effective dose per second = {result}", end="\n\n")

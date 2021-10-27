@@ -52,3 +52,18 @@ cad_to_h5m(
     h5m_filename='dagmc.h5m',
     cubit_path='/opt/Coreform-Cubit-2021.5/bin/'
 )
+
+
+# in case you don't have Cubit with the Svalin plugin installed you could use
+# stl_to_h5m. This doesn't imprint and merge the geometry so there could be
+# overlaps and tunneling particles.
+from stl_to_h5m import stl_to_h5m
+
+# exports the reactor shapes as separate stl files using default stl filenames
+stl_filenames = my_reactor.export_stl()
+files_with_tags = [(stl_filename, name) for name, stl_filename in zip(my_reactor.name, stl_filenames)]
+
+stl_to_h5m(
+    files_with_tags=files_with_tags,
+    h5m_filename='dagmc_not_imprinted_and_merged.h5m',
+)
