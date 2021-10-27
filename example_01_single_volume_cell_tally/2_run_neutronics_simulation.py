@@ -6,7 +6,7 @@ import openmc
 import openmc_dagmc_wrapper as odw
 import openmc_plasma_source as ops
 import openmc_post_processor as opp
-from spectrum_plotter import plot_spectra
+from spectrum_plotter import plot_spectrum_from_tally
 
 
 # defines a simple DT neutron point source
@@ -60,7 +60,7 @@ my_model = openmc.Model(
 statepoint_file = my_model.run()
 
 # loads up the statepoint file with simulation results
-statepoint = opp.StatePoint(filepath=statepoint_file)
+statepoint = openmc.StatePoint(filepath=statepoint_file)
 
 # gets the first tally using its name
 my_tally_1 = statepoint.get_tally(name="mat1_neutron_flux")
@@ -69,7 +69,7 @@ my_tally_1 = statepoint.get_tally(name="mat1_neutron_flux")
 source_strength = opp.find_source_strength(fusion_energy_per_second_or_per_pulse=1.3e6)
 
 # converts the flux units of the tally
-result = statepoint.process_tally(
+result = opp.process_tally(
     source_strength=source_strength,
     tally=my_tally_1,
     required_units="centimeter / second",
@@ -81,15 +81,16 @@ print(f"flux per second = {result}", end="\n\n")
 my_tally_2 = statepoint.get_tally(name="mat1_neutron_spectra")
 
 # returns the tally converted to MeV, scaled and normalisation for source strength
-result = statepoint.process_tally(
+result = opp.process_spectra_tally(
     tally=my_tally_2,
-    required_units=["MeV", "centimeter / second"],
+    required_units="centimeter / second",
+    required_energy_units='MeV',
     source_strength=source_strength
 )
 
 # creates a matplotlib figure of the tally
-spectrum_plot = plot_spectra(
-    spectra=(result[0], result[1]),
+spectrum_plot = plot_spectrum_from_tally(
+    spectrum={'neutron spectra tally': my_tally_2},
     x_label="Energy [MeV]",
     y_label="Flux [n/cm^2s]",
     x_scale="log",

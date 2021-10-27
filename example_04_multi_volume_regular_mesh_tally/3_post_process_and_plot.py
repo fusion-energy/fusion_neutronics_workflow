@@ -23,11 +23,10 @@ plot = plot_regular_mesh_tally_with_geometry(
     dagmc_file_or_trimesh_object="dagmc_not_merged.h5m",
     plane_origin=None,
     plane_normal=[0, 0, 1],
-    rotate_plot=0,
     scale=LogNorm(),
     vmin=None,
-    label="picosievert / cm / pulse",
-    filename="test.png",
+    label="(n,Xa) per pulse",
+    filename="mesh_tally_xy.png",
 )
 
 # plot.show()
@@ -40,7 +39,7 @@ plot = plot_regular_mesh_tally_with_geometry(
     rotate_plot=90,
     scale=LogNorm(),
     vmin=None,
-    label="(n,Xa) per pulse",
+    label="(n,Xa)",
     filename="my_tally_xz.png",
 )
 
