@@ -50,7 +50,7 @@ tallies = openmc.Tallies([tally1, tally2, tally3])
 
 settings = odw.FusionSettings()
 settings.batches = 4
-settings.particles = 1000000
+settings.particles = 10000
 # assigns a ring source of DT energy neutrons to the source using the
 # openmc_plasma_source package
 settings.source = ops.FusionRingSource(fuel="DT", radius=350)
