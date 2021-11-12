@@ -1,6 +1,6 @@
 # Fusion Neutronics Workflow
 
-![fusion neutronics workflow](https://user-images.githubusercontent.com/8583900/139263537-1e7e0094-67b3-4aef-a065-bf16704d88fe.png)
+![fusion neutronics workflow](https://user-images.githubusercontent.com/8583900/141475216-6876964f-0471-49ed-aa9d-b3000f2cb719.png)
 
 This repository contains a containerized neutronics workflow for carrying out
 standard neutronics simulations in a repeatable manner.
