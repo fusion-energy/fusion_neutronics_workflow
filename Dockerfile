@@ -158,6 +158,7 @@ RUN mkdir DAGMC && \
     cd DAGMC && \
     # this commit is from this PR https://github.com/svalinn/DAGMC/pull/786
     git checkout fbd0cdbad100a0fd8d80de42321e69d09fdd67f4 && \
+    cd .. && \
     mkdir build && \
     cd build && \
     cmake ../DAGMC -DBUILD_TALLY=ON \
@@ -228,7 +229,7 @@ WORKDIR /home/fusion-neutronics-workflow
 
 
 
-FROM ghcr.io/fusion-energy/fusion-neutronics-workflow:dependencies as final
+FROM dependencies as final
 
 COPY example_01_single_volume_cell_tally example_01_single_volume_cell_tally/
 COPY example_02_multi_volume_cell_tally example_02_multi_volume_cell_tally/
