@@ -96,6 +96,7 @@ spectrum_plot = plot_spectrum_from_tally(
     x_scale="log",
     y_scale="log",
     title="neutron spectra tally",
+    filename='my_spectrum_plot.png'
 )
 
-spectrum_plot.show()
+print('image saved as my_spectrum_plot.png')

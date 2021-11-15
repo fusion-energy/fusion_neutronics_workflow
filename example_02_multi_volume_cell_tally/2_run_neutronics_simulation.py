@@ -7,8 +7,9 @@ import openmc_dagmc_wrapper as odw
 import openmc_plasma_source as ops
 import openmc_tally_unit_converter as otuc
 
-
-geometry = odw.Geometry(h5m_filename="dagmc.h5m")
+dagmc_filename = "dagmc_not_imprinted_and_merged.h5m"
+# geometry = odw.Geometry(h5m_filename="dagmc.h5m")
+geometry = odw.Geometry(h5m_filename=dagmc_filename)
 
 # this links the material tags in the dagmc h5m file with materials.
 # these materials are input as strings so they will be looked up in the
@@ -24,7 +25,7 @@ material_tag_to_material_dict = {
 }
 
 materials = odw.Materials(
-    h5m_filename="dagmc.h5m", correspondence_dict=material_tag_to_material_dict
+    h5m_filename=dagmc_filename, correspondence_dict=material_tag_to_material_dict
 )
 
 tally1 = odw.CellTally(tally_type="TBR", target="blanket", materials=materials)
@@ -64,6 +65,6 @@ my_tally_2 = statepoint.get_tally(name="firstwall_neutron_effective_dose")
 
 # returns the tally with normalisation for source strength
 result = otuc.process_dose_tally(
-    source_strength=1.3e6, tally=my_tally_2, required_units="Sv cm **2 / second"
+    source_strength=1.3e6, tally=my_tally_2, required_units="Sv / second"
 )
-print(f"effective dose per second = {result}", end="\n\n")
+print(f"effective dose = {result}", end="\n\n")
