@@ -5,7 +5,7 @@
 import openmc
 import openmc_dagmc_wrapper as odw
 import openmc_plasma_source as ops
-import openmc_post_processor as opp
+import openmc_tally_unit_converter as otuc
 
 
 geometry = odw.Geometry(h5m_filename="dagmc.h5m")
@@ -63,7 +63,7 @@ print(f'TBR is {my_tally_1}')
 my_tally_2 = statepoint.get_tally(name="firstwall_neutron_effective_dose")
 
 # returns the tally with normalisation for source strength
-result = opp.process_dose_tally(
+result = otuc.process_dose_tally(
     source_strength=1.3e6, tally=my_tally_2, required_units="Sv cm **2 / second"
 )
 print(f"effective dose per second = {result}", end="\n\n")
