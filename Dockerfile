@@ -172,7 +172,7 @@ RUN mkdir DAGMC && \
 
 # Clone and install OpenMC with DAGMC
 # TODO clone a specific release when the next release containing (PR 1825) is avaialble.
-RUN cd /opt
+RUN cd /opt && \
     git clone --single-branch --branch develop https://github.com/openmc-dev/openmc.git && \
     cd openmc && \
     # this commit is from this PR https://github.com/openmc-dev/openmc/pull/1900
