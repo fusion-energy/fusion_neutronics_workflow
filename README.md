@@ -1,9 +1,14 @@
 # Fusion Neutronics Workflow
 
-![fusion neutronics workflow](https://user-images.githubusercontent.com/8583900/141475216-6876964f-0471-49ed-aa9d-b3000f2cb719.png)
+![fusion neutronics workflow](https://user-images.githubusercontent.com/8583900/141863141-9f04c63b-0fcb-4881-b7db-0d3001fd5fdc.png)
 
 This repository contains a containerized neutronics workflow for carrying out
 standard neutronics simulations in a repeatable manner.
+
+There are workflows for producing standard neutronics simulations such as dose
+maps, DPA tallies, neutron/photon spectra, 3D VTK visualizations and the aim is
+to provide working examples for mainstream fusion neutronics analysis.
+Contributions are welcome.
 
 This repository combines the several packages to create neutronics workflow
 that is:
@@ -48,8 +53,12 @@ Links to the packages that are utilized by the fusion-neutronics-workflow
     parameters.
 
     * [cad_to_h5m](https://github.com/fusion-energy/cad_to_h5m) automated
-    conversion of stp or sat CAD files to h5m files compatible with DAGMC
+    conversion of STP or SAT CAD files to h5m files compatible with DAGMC
     enabled particle transport codes.
+
+    * [stl_to_h5m](https://github.com/fusion-energy/stl_to_h5m) automated
+    conversion of STL files to h5m files compatible with DAGMC enabled
+    particle transport codes.
 
     * [openmc_dagmc_wrapper](https://github.com/fusion-energy/openmc-dagmc-wrapper)
     allows one to quickly utilise the h5m geometry files in a range of
@@ -58,12 +67,15 @@ Links to the packages that are utilized by the fusion-neutronics-workflow
     * [openmc_data_downloader](https://github.com/openmc-data-storage/openmc_data_downloader) performs on the fly downloading of nuclear data
     needed for OpenMC neutronics simulations.
 
+    * [openmc_tally_unit_converter](https://github.com/openmc-data-storage/openmc_tally_unit_converter) converts the units of common tally such as
+    heating, DPA, effective dose into user specified units. 
+
     * [neutronics-material-maker](https://github.com/fusion-energy/neutronics_material_maker)
     Create and customise materials from an internal database or from your own
     recipe, export to a wide range of neutronics codes.
 
 
-* Open source projects that are utilised and contributed to
+* Open source projects that are utilized and contributed to
 
     * [OpenMC](https://github.com/openmc-dev/openmc) The OpenMC project, a
     Monte Carlo particle transport code based on modern methods.
@@ -77,19 +89,22 @@ Links to the packages that are utilized by the fusion-neutronics-workflow
     * [SphinxCadQuery](https://github.com/CadQuery/sphinxcadquery)
 
 
-* OpenMC source projects utilised in the software stack
+* OpenMC source projects utilized in the software stack
 
     * [MOAB and pymoab](https://github.com/svalinn/Cubit-plugin/) the
       Mesh-Oriented datABase MOAB is a component for representing and evaluating
       mesh data.
 
-    * [CadQuery](https://github.com/cadquery/cadquery)
+    * [CadQuery](https://github.com/cadquery/cadquery) A python parametric CAD
+      scripting framework based on OCCT 
 
-    * [Double-Down](https://github.com/pshriwise/double-down)
+    * [Double-Down](https://github.com/pshriwise/double-down) A double precision 
+       interface to Embree via the Mesh Oriented dAtaBase (MOAB). 
 
-    * [Embree](https://github.com/embree/embree)
+    * [Embree](https://github.com/embree/embree) high-performance ray tracing
+       kernels
     
-    * Scipy, Numpy, Plotly and others
+    * Scipy, Numpy, Plotly Pint and other standard scientific Python packages
 
 
 * Commercial codes (with non commercial license available)
