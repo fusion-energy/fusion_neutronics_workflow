@@ -37,9 +37,10 @@ jobs:
           python 1_create_cad_and_convert_to_dagmc.py
           python 2_run_neutronics_simulation.py       
 
-      - name: run example_05_3D_unstructured_mesh_tally
-        run: |
-          cd example_05_3D_unstructured_mesh_tally
-          python 1_create_cad_and_convert_to_dagmc.py
-          mbconvert stage_2_output/unstructured_mesh.cub stage_2_output/unstructured_mesh.h5m
-          python 2_run_neutronics_simulation.py
+      # commented out as cubit learn license is not currently working
+      # - name: run example_05_3D_unstructured_mesh_tally
+      #   run: |
+      #     cd example_05_3D_unstructured_mesh_tally
+      #     python 1_create_cad_and_convert_to_dagmc.py
+      #     mbconvert stage_2_output/unstructured_mesh.cub stage_2_output/unstructured_mesh.h5m
+      #     python 2_run_neutronics_simulation.py
