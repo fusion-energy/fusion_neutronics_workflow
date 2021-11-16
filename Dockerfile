@@ -98,12 +98,19 @@ RUN apt-get install -y libxcb-xinerama0
 
 
 # Clone and install Embree
+# embree from conda is not supported yet
+# conda install -c conda-forge embree >> version: 2.17.7
+# requested version "3.6.1"
 RUN git clone --shallow-submodules --single-branch --branch v3.12.2 --depth 1 https://github.com/embree/embree.git && \
     cd embree && \
     mkdir build && \
     cd build && \
     cmake .. -DCMAKE_INSTALL_PREFIX=.. \
-             -DEMBREE_ISPC_SUPPORT=OFF && \
+             -DEMBREE_ISPC_SUPPORT=OFF \
+             # added following two lines to allow use on AMD CPUs see discussion
+             # https://openmc.discourse.group/t/dagmc-geometry-open-mc-aborted-unexpectedly/1369/24?u=pshriwise
+             -DEMBREE_MAX_ISA=NONE \
+             -DEMBREE_ISA_SSE42=ON && \
     make -j"$compile_cores" && \
     make -j"$compile_cores" install
 
@@ -190,10 +197,6 @@ RUN cd /opt && \
     cd ..  && \
     pip install -e .[test]
 
-# installs python packages and nuclear data
-RUN pip install openmc_data_downloader && \
-    openmc_data_downloader -d nuclear_data -e all -i H3 -l ENDFB-7.1-NNDC TENDL-2019 -p neutron photon --no-overwrite
-
 # Download Cubit
 RUN wget -O coreform-cubit-2021.5.deb https://f002.backblazeb2.com/file/cubit-downloads/Coreform-Cubit/Releases/Linux/Coreform-Cubit-2021.5%2B15962_5043ef39-Lin64.deb
 
@@ -208,14 +211,18 @@ RUN tar -xzvf svalinn-plugin_debian-10.10_cubit_2021.5.tgz -C /opt/Coreform-Cubi
 RUN mkdir -p /root/.config/Coreform/licenses
 RUN printf 'Fri May 28 2021' >> /root/.config/Coreform/licenses/cubit-learn.lic
 
-# helps to identify Cubit related errrors
-ENV CUBIT_VERBOSE=5
-
 # needed to prevent hdf5 conflict between MOAB and Cubit
 ENV HDF5_DISABLE_VERSION_CHECK=1
 
+# helps to identify Cubit related errrors
+ENV CUBIT_VERBOSE=5
+
+
 COPY requirements.txt requirements.txt
 RUN pip install -r requirements.txt
+
+# installs python packages and nuclear data
+RUN openmc_data_downloader -d nuclear_data -e all -i H3 -l ENDFB-7.1-NNDC TENDL-2019 -p neutron photon --no-overwrite
 
 
 # setting enviromental varibles
