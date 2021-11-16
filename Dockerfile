@@ -235,8 +235,7 @@ EXPOSE 8888
 WORKDIR /home/fusion-neutronics-workflow
 
 
-
-FROM ghcr.io/fusion-energy/fusion-neutronics-workflow:dependencies as final
+FROM dependencies as final
 
 COPY example_01_single_volume_cell_tally example_01_single_volume_cell_tally/
 COPY example_02_multi_volume_cell_tally example_02_multi_volume_cell_tally/
