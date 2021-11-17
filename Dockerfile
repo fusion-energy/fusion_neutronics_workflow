@@ -114,10 +114,11 @@ RUN git clone --shallow-submodules --single-branch --branch v3.12.2 --depth 1 ht
     make -j"$compile_cores" && \
     make -j"$compile_cores" install
 
+# upgrading numpy version
+RUN pip install "numpy>=1.20,<1.30" cython
 
 # Clone and install MOAB
-RUN pip install --upgrade numpy cython && \
-    mkdir MOAB && \
+RUN mkdir MOAB && \
     cd MOAB && \
     mkdir build && \
     git clone --shallow-submodules --single-branch --branch 5.3.0 --depth 1 https://bitbucket.org/fathomteam/moab.git && \
