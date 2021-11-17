@@ -32,7 +32,7 @@
 
 # TODO save build time by basing this on FROM ghcr.io/fusion-energy/paramak:latest
 # This can't be done currently as the base images uses conda installs for moab / dagmc which don't compile with OpenMC
-FROM ghcr.io/openmc-data-storage/miniconda3_4.9.2_endfb-7.1_nndc_tendl_2019:latest as dependencies
+FROM ghcr.io/openmc-data-storage/miniconda3_4.9.2_endfb-7.1_nndc_tendl_2019:latest
 
 ARG compile_cores=1
 
@@ -234,10 +234,9 @@ RUN mkdir /home/fusion-neutronics-workflow
 EXPOSE 8888
 WORKDIR /home/fusion-neutronics-workflow
 
-
-FROM dependencies as final
-
-COPY example_01_single_volume_cell_tally example_01_single_volume_cell_tally/
-COPY example_02_multi_volume_cell_tally example_02_multi_volume_cell_tally/
-COPY example_04_multi_volume_regular_mesh_tally example_04_multi_volume_regular_mesh_tally/
-COPY example_05_3D_unstructured_mesh_tally example_05_3D_unstructured_mesh_tally/
+# subfolder used to avoid overlapping with the testing of examples in GH actions
+RUN mkdir examples
+COPY example_01_single_volume_cell_tally examples/example_01_single_volume_cell_tally/
+COPY example_02_multi_volume_cell_tally examples/example_02_multi_volume_cell_tally/
+COPY example_04_multi_volume_regular_mesh_tally examples/example_04_multi_volume_regular_mesh_tally/
+COPY example_05_3D_unstructured_mesh_tally examples/example_05_3D_unstructured_mesh_tally/

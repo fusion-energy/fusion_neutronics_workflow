@@ -14,7 +14,7 @@ jobs:
   testing:
     runs-on: ubuntu-latest
     container:
-      image: ghcr.io/fusion-energy/fusion-neutronics-workflow:dependencies
+      image: ghcr.io/fusion-energy/fusion-neutronics-workflow
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
