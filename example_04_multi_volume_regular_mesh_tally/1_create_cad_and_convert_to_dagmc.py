@@ -3,7 +3,6 @@
 # A surrounding volume called a graveyard is needed for neutronics simulations
 
 import paramak
-from cad_to_h5m import cad_to_h5m
 from stl_to_h5m import stl_to_h5m
 
 my_reactor = paramak.BallReactor(
@@ -47,18 +46,19 @@ stl_to_h5m(
 
 # method 2
 # makes a dagmc geometry that has been imprinted and merged and requires cubit
-stp_filenames = my_reactor.export_stp()
+# from cad_to_h5m import cad_to_h5m
+# stp_filenames = my_reactor.export_stp()
 
-# removes the plasma as this complicates the geometry and has minimal interations with particles
-stp_filenames.remove('plasma.stp')
+# # removes the plasma as this complicates the geometry and has minimal interations with particles
+# stp_filenames.remove('plasma.stp')
 
-files_with_tags = [{'cad_filename': stp_filename, 'material_tag': name} for name, stp_filename in zip(compentent_names, stp_filenames)]
-# produces a list of dictionaries of with cad_filename and material_tag as the keys.
-# the values are the stp filename and the name of the component
+# files_with_tags = [{'cad_filename': stp_filename, 'material_tag': name} for name, stp_filename in zip(compentent_names, stp_filenames)]
+# # produces a list of dictionaries of with cad_filename and material_tag as the keys.
+# # the values are the stp filename and the name of the component
 
-cad_to_h5m(
-    files_with_tags=files_with_tags,
-    make_watertight=True,
-    h5m_filename='dagmc.h5m',
-    cubit_path='/opt/Coreform-Cubit-2021.5/bin/',
-)
+# cad_to_h5m(
+#     files_with_tags=files_with_tags,
+#     make_watertight=True,
+#     h5m_filename='dagmc.h5m',
+#     cubit_path='/opt/Coreform-Cubit-2021.5/bin/',
+# )

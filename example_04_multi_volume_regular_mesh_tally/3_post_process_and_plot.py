@@ -1,4 +1,4 @@
-import openmc_post_processor as opp
+import openmc_tally_unit_converter as otuc
 import openmc
 from regular_mesh_plotter import plot_regular_mesh_tally_with_geometry
 
@@ -15,7 +15,7 @@ my_tally_xy = statepoint.get_tally(name="(n,Xa)_on_2D_mesh_xy")
 my_tally_xz = statepoint.get_tally(name="(n,Xa)_on_2D_mesh_xz")
 
 # gets number of neutron for a 1.3 mega joule shot
-source_strength = opp.find_source_strength(fusion_energy_per_second_or_per_pulse=1.3e6)
+source_strength = otuc.find_source_strength(fusion_energy_per_second_or_per_pulse=1.3e6)
 
 
 plot = plot_regular_mesh_tally_with_geometry(

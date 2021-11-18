@@ -5,7 +5,7 @@
 import openmc
 import openmc_dagmc_wrapper as odw
 import openmc_plasma_source as ops
-import openmc_post_processor as opp
+import openmc_tally_unit_converter as otuc
 from spectrum_plotter import plot_spectrum_from_tally
 
 
@@ -66,10 +66,10 @@ statepoint = openmc.StatePoint(filepath=statepoint_file)
 my_tally_1 = statepoint.get_tally(name="mat1_neutron_flux")
 
 # gets number of neutron for a 1.3 mega joule shot
-source_strength = opp.find_source_strength(fusion_energy_per_second_or_per_pulse=1.3e6)
+source_strength = otuc.find_source_strength(fusion_energy_per_second_or_per_pulse=1.3e6)
 
 # converts the flux units of the tally
-result = opp.process_tally(
+result = otuc.process_tally(
     source_strength=source_strength,
     tally=my_tally_1,
     required_units="centimeter / second",
@@ -81,7 +81,7 @@ print(f"flux per second = {result}", end="\n\n")
 my_tally_2 = statepoint.get_tally(name="mat1_neutron_spectra")
 
 # returns the tally converted to MeV, scaled and normalisation for source strength
-result = opp.process_spectra_tally(
+result = otuc.process_spectra_tally(
     tally=my_tally_2,
     required_units="centimeter / second",
     required_energy_units='MeV',
@@ -96,6 +96,7 @@ spectrum_plot = plot_spectrum_from_tally(
     x_scale="log",
     y_scale="log",
     title="neutron spectra tally",
+    filename='my_spectrum_plot.png'
 )
 
-spectrum_plot.show()
+print('image saved as my_spectrum_plot.png')

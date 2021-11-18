@@ -5,7 +5,6 @@
 import openmc
 import openmc_dagmc_wrapper as odw
 import openmc_plasma_source as ops
-import openmc_data_downloader as odd
 
 # could set to dagmc.h5m if the imprinted and merged geometry is preferred
 my_h5m_filename = "dagmc_not_merged.h5m"
@@ -29,6 +28,7 @@ materials = odw.Materials(
 )
 
 # uncomment if you don't have nuclear data already and it will be downloaded
+# import openmc_data_downloader as odd
 # odd.just_in_time_library_generator(
 #     libraries=['ENDFB-7.1-NNDC', 'TENDL-2019'],
 #     materials=materials
