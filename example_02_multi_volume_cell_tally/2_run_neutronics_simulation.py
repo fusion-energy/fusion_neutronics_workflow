@@ -53,7 +53,6 @@ statepoint_file = my_model.run()
 
 statepoint = openmc.StatePoint(statepoint_file)
 
-print(statepoint.tallies)
 # gets the second tally using its name
 my_tally_1 = statepoint.get_tally(name="blanket_TBR")
 
@@ -65,6 +64,7 @@ my_tally_2 = statepoint.get_tally(name="firstwall_neutron_effective_dose")
 
 # returns the tally with normalisation for source strength
 result = otuc.process_dose_tally(
-    source_strength=1.3e6, tally=my_tally_2, required_units="Sv / second"
+    source_strength=1.3e6, tally=my_tally_2, required_units="Sv / second",
+    volume= 100 # in the future this volume of the component will be found automatically
 )
 print(f"effective dose = {result}", end="\n\n")
