@@ -5,7 +5,6 @@
 import openmc
 import openmc_dagmc_wrapper as odw
 import openmc_plasma_source as ops
-from dagmc_bounding_box import DagmcBoundingBox
 
 
 # could set to dagmc.h5m if the imprinted and merged geometry is preferred
@@ -37,7 +36,7 @@ materials = odw.Materials(
 # )
 
 geometry = odw.Geometry(h5m_filename=my_h5m_filename)
-bounding_box = DagmcBoundingBox(my_h5m_filename).corners()
+bounding_box = geometry.corners()
 
 tally1 = odw.MeshTally3D(
     mesh_resolution=(100, 100, 100),
