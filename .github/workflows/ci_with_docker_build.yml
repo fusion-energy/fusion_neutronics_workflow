@@ -21,7 +21,7 @@ jobs:
 
           docker run --rm paramak-neutronics  /bin/bash -c "cd example_01_single_volume_cell_tally && bash run_all.sh"
           docker run --rm paramak-neutronics  /bin/bash -c "cd example_02_multi_volume_cell_tally && bash run_all.sh"
-
           docker run --rm paramak-neutronics  /bin/bash -c "cd example_04_multi_volume_regular_mesh_tally && bash run_all.sh"
-          docker run --rm paramak-neutronics  /bin/bash -c "cd example_05_3D_unstructured_mesh_tally && bash run_all.sh"
 
+          # commented out as cubit learn license is currently not working
+          # docker run --rm paramak-neutronics  /bin/bash -c "cd example_05_3D_unstructured_mesh_tally && bash run_all.sh"

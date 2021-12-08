@@ -1,5 +1,10 @@
 
-paramak
-openmc-dagmc-wrapper
-openmc-plasma-source
-cad_to_h5m
+paramak==0.6.3
+openmc-dagmc-wrapper==0.2.4
+openmc-plasma-source==0.2.3
+cad_to_h5m==0.2.3
+stl_to_h5m==0.0.2
+openmc_tally_unit_converter==0.2.0
+spectrum_plotter==0.2.0
+regular_mesh_plotter==0.2.1
+openmc_data_downloader==0.5.2

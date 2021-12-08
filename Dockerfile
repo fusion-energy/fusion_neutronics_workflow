@@ -32,7 +32,7 @@
 
 # TODO save build time by basing this on FROM ghcr.io/fusion-energy/paramak:latest
 # This can't be done currently as the base images uses conda installs for moab / dagmc which don't compile with OpenMC
-FROM continuumio/miniconda3:4.9.2 as dependencies
+FROM ghcr.io/openmc-data-storage/miniconda3_4.9.2_endfb-7.1_nndc_tendl_2019:latest
 
 ARG compile_cores=1
 
@@ -98,19 +98,27 @@ RUN apt-get install -y libxcb-xinerama0
 
 
 # Clone and install Embree
+# embree from conda is not supported yet
+# conda install -c conda-forge embree >> version: 2.17.7
+# requested version "3.6.1"
 RUN git clone --shallow-submodules --single-branch --branch v3.12.2 --depth 1 https://github.com/embree/embree.git && \
     cd embree && \
     mkdir build && \
     cd build && \
     cmake .. -DCMAKE_INSTALL_PREFIX=.. \
-             -DEMBREE_ISPC_SUPPORT=OFF && \
+             -DEMBREE_ISPC_SUPPORT=OFF \
+             # added following two lines to allow use on AMD CPUs see discussion
+             # https://openmc.discourse.group/t/dagmc-geometry-open-mc-aborted-unexpectedly/1369/24?u=pshriwise
+             -DEMBREE_MAX_ISA=NONE \
+             -DEMBREE_ISA_SSE42=ON && \
     make -j"$compile_cores" && \
     make -j"$compile_cores" install
 
+# upgrading numpy version
+RUN pip install "numpy>=1.21.4,<1.30" cython
 
 # Clone and install MOAB
-RUN pip install --upgrade numpy cython && \
-    mkdir MOAB && \
+RUN mkdir MOAB && \
     cd MOAB && \
     mkdir build && \
     git clone --shallow-submodules --single-branch --branch 5.3.0 --depth 1 https://bitbucket.org/fathomteam/moab.git && \
@@ -138,7 +146,7 @@ RUN pip install --upgrade numpy cython && \
 
 
 # Clone and install Double-Down
-RUN git clone --shallow-submodules --single-branch --branch main --depth 1 https://github.com/pshriwise/double-down.git && \
+RUN git clone --shallow-submodules --single-branch --branch v1.0.0 --depth 1 https://github.com/pshriwise/double-down.git && \
     cd double-down && \
     mkdir build && \
     cd build && \
@@ -154,7 +162,11 @@ RUN mkdir DAGMC && \
     cd DAGMC && \
     # change to version 3.2.1 when released
     # git clone --single-branch --branch 3.2.1 --depth 1 https://github.com/svalinn/DAGMC.git && \
-    git clone --shallow-submodules --single-branch --branch develop --depth 1 https://github.com/svalinn/DAGMC.git && \
+    git clone --single-branch --branch develop https://github.com/svalinn/DAGMC.git && \
+    cd DAGMC && \
+    # this commit is from this PR https://github.com/svalinn/DAGMC/pull/786
+    git checkout fbd0cdbad100a0fd8d80de42321e69d09fdd67f4 && \
+    cd .. && \
     mkdir build && \
     cd build && \
     cmake ../DAGMC -DBUILD_TALLY=ON \
@@ -169,7 +181,11 @@ RUN mkdir DAGMC && \
 
 # Clone and install OpenMC with DAGMC
 # TODO clone a specific release when the next release containing (PR 1825) is avaialble.
-RUN git clone --shallow-submodules --recurse-submodules --single-branch --branch develop --depth 1 https://github.com/openmc-dev/openmc.git  /opt/openmc && \
+RUN cd /opt && \
+    git clone --single-branch --branch develop https://github.com/openmc-dev/openmc.git && \
+    cd openmc && \
+    # this commit is from this PR https://github.com/openmc-dev/openmc/pull/1900
+    git checkout 0157dc219ff8dca814859b3140c6cef1e78cdee1 && \
     cd /opt/openmc && \
     mkdir build && \
     cd build && \
@@ -181,10 +197,6 @@ RUN git clone --shallow-submodules --recurse-submodules --single-branch --branch
     make -j"$compile_cores" install && \
     cd ..  && \
     pip install -e .[test]
-
-# installs python packages and nuclear data
-RUN pip install openmc_data_downloader && \
-    openmc_data_downloader -d nuclear_data -e all -i H3 -l ENDFB-7.1-NNDC TENDL-2019 -p neutron photon
 
 # Download Cubit
 RUN wget -O coreform-cubit-2021.5.deb https://f002.backblazeb2.com/file/cubit-downloads/Coreform-Cubit/Releases/Linux/Coreform-Cubit-2021.5%2B15962_5043ef39-Lin64.deb
@@ -200,14 +212,18 @@ RUN tar -xzvf svalinn-plugin_debian-10.10_cubit_2021.5.tgz -C /opt/Coreform-Cubi
 RUN mkdir -p /root/.config/Coreform/licenses
 RUN printf 'Fri May 28 2021' >> /root/.config/Coreform/licenses/cubit-learn.lic
 
-# helps to identify Cubit related errrors
-ENV CUBIT_VERBOSE=5
-
 # needed to prevent hdf5 conflict between MOAB and Cubit
 ENV HDF5_DISABLE_VERSION_CHECK=1
 
+# helps to identify Cubit related errrors
+ENV CUBIT_VERBOSE=5
+
+
 COPY requirements.txt requirements.txt
 RUN pip install -r requirements.txt
+
+# installs python packages and nuclear data
+RUN openmc_data_downloader -d nuclear_data -e all -i H3 -l ENDFB-7.1-NNDC TENDL-2019 -p neutron photon --no-overwrite
 
 
 # setting enviromental varibles
@@ -219,11 +235,9 @@ RUN mkdir /home/fusion-neutronics-workflow
 EXPOSE 8888
 WORKDIR /home/fusion-neutronics-workflow
 
-
-
-FROM ghcr.io/fusion-energy/fusion-neutronics-workflow:dependencies as final
-
-COPY example_01_single_volume_cell_tally example_01_single_volume_cell_tally/
-COPY example_02_multi_volume_cell_tally example_02_multi_volume_cell_tally/
-COPY example_04_multi_volume_regular_mesh_tally example_04_multi_volume_regular_mesh_tally/
-COPY example_05_3D_unstructured_mesh_tally example_05_3D_unstructured_mesh_tally/
+# subfolder used to avoid overlapping with the testing of examples in GH actions
+RUN mkdir examples
+COPY example_01_single_volume_cell_tally examples/example_01_single_volume_cell_tally/
+COPY example_02_multi_volume_cell_tally examples/example_02_multi_volume_cell_tally/
+COPY example_04_multi_volume_regular_mesh_tally examples/example_04_multi_volume_regular_mesh_tally/
+COPY example_05_3D_unstructured_mesh_tally examples/example_05_3D_unstructured_mesh_tally/

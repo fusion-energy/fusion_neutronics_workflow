@@ -3,7 +3,6 @@
 # A surrounding volume called a graveyard is needed for neutronics simulations
 
 import paramak
-from cad_to_h5m import cad_to_h5m
 
 
 my_reactor = paramak.BallReactor(
@@ -41,14 +40,32 @@ stp_filenames = my_reactor.export_stp()
 # The stp files along with their material tags are based on the names of the
 # shapes in the reactor using dictionary comprehension.
 
-files_with_tags = [{'cad_filename':stp_filename, 'material_tag':name} for name, stp_filename in zip(my_reactor.name, stp_filenames)]
+
+# method uses cubit to create dagmc h5m file.
+
+# files_with_tags = [{'cad_filename':stp_filename, 'material_tag':name} for name, stp_filename in zip(my_reactor.name, stp_filenames)]
 # produces a list of dictionaries of with cad_filename and material_tag as the keys.
 # the values are the stp filename and the name of the component
 # [{'cad_filename': 'plasma.stp', 'material_tag': 'plasma'}, {'cad_filename': 'inboard_tf_coils.stp', 'material_tag': 'inboard_tf_coils'}, {'cad_filename': 'center_column_shield.stp', 'material_tag': 'center_column_shield'}, {'cad_filename': 'firstwall.stp', 'material_tag': 'firstwall'}, {'cad_filename': 'blanket.stp', 'material_tag': 'blanket'}, {'cad_filename': 'blanket_rear_wall.stp', 'material_tag': 'blanket_rear_wall'}, {'cad_filename': 'divertor.stp', 'material_tag': 'divertor'}]
 
+# from cad_to_h5m import cad_to_h5m
+# cad_to_h5m(
+#     files_with_tags=files_with_tags,
+#     h5m_filename='dagmc.h5m',
+#     cubit_path='/opt/Coreform-Cubit-2021.5/bin/'
+# )
 
-cad_to_h5m(
+
+# in case you don't have Cubit with the Svalin plugin installed you could use
+# stl_to_h5m. This doesn't imprint and merge the geometry so there could be
+# overlaps and tunneling particles.
+from stl_to_h5m import stl_to_h5m
+
+# exports the reactor shapes as separate stl files using default stl filenames
+stl_filenames = my_reactor.export_stl()
+files_with_tags = [(stl_filename, name) for name, stl_filename in zip(my_reactor.name, stl_filenames)]
+
+stl_to_h5m(
     files_with_tags=files_with_tags,
-    h5m_filename='dagmc.h5m',
-    cubit_path='/opt/Coreform-Cubit-2021.5/bin/'
+    h5m_filename='dagmc_not_imprinted_and_merged.h5m',
 )
