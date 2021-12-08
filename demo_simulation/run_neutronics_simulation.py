@@ -17,8 +17,7 @@ coverage = 10
 
 # my_source = ops.FusionRingSource(
 #     radius=900,
-#     start_angle=0,
-#     stop_angle=coverage*3.14159265359/180,
+#     angles=(0, coverage*3.14159265359/180),
 # )
 
 
@@ -49,12 +48,12 @@ settings.particles = int(1e4)
 settings.run_mode = "fixed source"
 settings.inactive = 0
 
-h5m_filename = 'stage_2_output/dagmc.h5m'
+h5m_filename = 'dagmc_not_merged.h5m'
 materials = odw.Materials(
     h5m_filename=h5m_filename,
     correspondence_dict={
-        'divertor_mat': 'tungsten',
-        'blanket_mat': 'tungsten'
+        'divertor': 'tungsten',
+        'blanket': 'Li4SiO4'
     }
 )
 
@@ -64,34 +63,35 @@ geometry = odw.Geometry(
 )
 
 
-# tally = odw.TetMeshTally('(n,Xa)', filename='stage_2_output/unstructured_mesh.h5m')
-# parts/s = 312
-# tally = odw.CellTally('(n,Xa)')
-# parts/s = 3200
-# tally = odw.TetMeshTally('(n,Xa)', filename='stage_2_output/mesh_custom.h5m')
-# parts/s = 71
-size_voxel = 10  # cm
+# # tally = odw.TetMeshTally('(n,Xa)', filename='stage_2_output/unstructured_mesh.h5m')
+# # parts/s = 312
+# # tally = odw.CellTally('(n,Xa)')
+# # parts/s = 3200
+# # tally = odw.TetMeshTally('(n,Xa)', filename='stage_2_output/mesh_custom.h5m')
+# # parts/s = 71
+# size_voxel = 10  # cm
 # tally = odw.MeshTally2D(
 #     '(n,Xa)', plane="xz",
 #     bounding_box=[(550, -1, -700), (1250, 1, 700)],
 #     mesh_resolution=[int(1400/size_voxel), int((1250-550)/size_voxel)]  # Z X
 # )
-# parts/s = 3k
-tally = odw.MeshTally3D(
-    '(n,Xa)',
-    bounding_box=[(550, 0, -700), (1250, 200, 700)],
-    mesh_resolution=[int(1400/size_voxel), int(200/size_voxel), int((1250-550)/size_voxel)]
-)
+# # parts/s = 3k
+# # tally = odw.MeshTally3D(
+# #     '(n,Xa)',
+# #     bounding_box=[(550, 0, -700), (1250, 200, 700)],
+# #     mesh_resolution=[int(1400/size_voxel), int(200/size_voxel), int((1250-550)/size_voxel)]
+# # )
+# # tally = odw.TetMeshTally('TBR', filename='stage_2_output/unstructured_mesh.h5m')
 
-neutronics_model = openmc.Model(
-    geometry=geometry,
-    settings=settings,
-    materials=materials,
-    tallies=[tally],
-)
+# neutronics_model = openmc.Model(
+#     geometry=geometry,
+#     settings=settings,
+#     materials=materials,
+#     tallies=[tally],
+# )
 
-statepoint_file = neutronics_model.run(
-    # restart_file='statepoint.60.h5'
-)
+# statepoint_file = neutronics_model.run(
+#     # restart_file='statepoint.60.h5'
+# )
 
-odw.process_results(statepoint_file, fusion_power=1e9)
+# odw.process_results(statepoint_file, fusion_power=1e9)
