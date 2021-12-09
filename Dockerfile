@@ -56,6 +56,12 @@ RUN apt-get install -y libgl1-mesa-glx \
                        curl && \
                        apt-get clean
 
+
+# upgrading numpy version
+# RUN pip install "numpy>=1.21.4,<1.30" cython
+RUN pip install cython
+RUN conda install -c anaconda numpy==1.21.2
+
 # Installing CadQuery
 RUN conda install -c conda-forge -c cadquery cadquery=2.1 && \
     pip install jupyter-cadquery==2.1.0
@@ -113,9 +119,6 @@ RUN git clone --shallow-submodules --single-branch --branch v3.12.2 --depth 1 ht
              -DEMBREE_ISA_SSE42=ON && \
     make -j"$compile_cores" && \
     make -j"$compile_cores" install
-
-# upgrading numpy version
-RUN pip install "numpy>=1.21.4,<1.30" cython
 
 # Clone and install MOAB
 RUN mkdir MOAB && \

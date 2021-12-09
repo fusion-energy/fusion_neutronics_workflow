@@ -6,6 +6,7 @@ import openmc
 import openmc_dagmc_wrapper as odw
 import openmc_plasma_source as ops
 
+
 # could set to dagmc.h5m if the imprinted and merged geometry is preferred
 my_h5m_filename = "dagmc_not_merged.h5m"
 # my_h5m_filename='dagmc.h5m'
@@ -35,16 +36,17 @@ materials = odw.Materials(
 # )
 
 geometry = odw.Geometry(h5m_filename=my_h5m_filename)
+bounding_box = geometry.corners()
 
 tally1 = odw.MeshTally3D(
     mesh_resolution=(100, 100, 100),
-    bounding_box=my_h5m_filename,
+    bounding_box=bounding_box,
     tally_type="(n,Xa)",
 )
 
-tally2 = odw.MeshTally2D(tally_type="(n,Xa)", plane="xy", bounding_box=my_h5m_filename)
+tally2 = odw.MeshTally2D(tally_type="(n,Xa)", plane="xy", bounding_box=bounding_box)
 
-tally3 = odw.MeshTally2D(tally_type="(n,Xa)", plane="xz", bounding_box=my_h5m_filename)
+tally3 = odw.MeshTally2D(tally_type="(n,Xa)", plane="xz", bounding_box=bounding_box)
 
 tallies = openmc.Tallies([tally1, tally2, tally3])
 
