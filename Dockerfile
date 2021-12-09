@@ -109,29 +109,25 @@ RUN apt-get install -y libxcb-xinerama0
 # embree from conda is not supported yet
 # conda install -c conda-forge embree >> version: 2.17.7
 # requested version "3.6.1"
-RUN if [ "$include_avx" = "false" ] ; then \
-    git clone --shallow-submodules --single-branch --branch v3.12.2 --depth 1 https://github.com/embree/embree.git && \
-    cd embree && \
-    mkdir build && \
-    cd build && \
-    cmake .. -DCMAKE_INSTALL_PREFIX=.. \
-             -DEMBREE_ISPC_SUPPORT=OFF \
-             # added following two lines to allow use on AMD CPUs see discussion
-             # https://openmc.discourse.group/t/dagmc-geometry-open-mc-aborted-unexpectedly/1369/24?u=pshriwise
-             -DEMBREE_MAX_ISA=NONE \
-             -DEMBREE_ISA_SSE42=ON && \
-    make -j"$compile_cores" && \
-    make -j"$compile_cores" install
+# added following two lines to allow use on AMD CPUs see discussion
+# https://openmc.discourse.group/t/dagmc-geometry-open-mc-aborted-unexpectedly/1369/24?u=pshriwise  
+RUN git clone --shallow-submodules --single-branch --branch v3.12.2 --depth 1 https://github.com/embree/embree.git \
+    && cd embree \
+    && mkdir build \
+    && cd build ; \
+    if [ "$include_avx" = "false" ] ; then \
+        cmake .. -DCMAKE_INSTALL_PREFIX=.. \
+                -DEMBREE_ISPC_SUPPORT=OFF \
+                -DEMBREE_MAX_ISA=NONE \
+                -DEMBREE_ISA_SSE42=ON ; \
+    fi ; \
+    if [ "$include_avx" = "true" ] ; then \
+        cmake .. -DCMAKE_INSTALL_PREFIX=.. \
+                -DEMBREE_ISPC_SUPPORT=OFF ; \
+    fi ; \
+    make -j"$compile_cores" \
+    && make -j"$compile_cores" install
 
-RUN if [ "$include_avx" = "true" ] ; then \
-    git clone --shallow-submodules --single-branch --branch v3.12.2 --depth 1 https://github.com/embree/embree.git && \
-    cd embree && \
-    mkdir build && \
-    cd build && \
-    cmake .. -DCMAKE_INSTALL_PREFIX=.. \
-             -DEMBREE_ISPC_SUPPORT=OFF && \
-    make -j"$compile_cores" && \
-    make -j"$compile_cores" install
 
 # Clone and install MOAB
 RUN mkdir MOAB && \
