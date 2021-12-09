@@ -30,6 +30,14 @@ jobs:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Cache Docker layers
+        uses: actions/cache@v2
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-single-buildx-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-single-buildx
+
       - name: Build and push the Docker image
         uses: docker/build-push-action@v2
         with:
@@ -39,6 +47,16 @@ jobs:
             include_avx=false
             cq_version=2.1
             compile_cores=2
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache-new
+
+      # Temp fix
+      # https://github.com/docker/build-push-action/issues/252
+      # https://github.com/moby/buildkit/issues/1896
+      - name: Move cache
+        run: |
+          rm -rf /tmp/.buildx-cache
+          mv /tmp/.buildx-cache-new /tmp/.buildx-cache
 
       - name: Build and push the Docker image
         uses: docker/build-push-action@v2
@@ -57,7 +75,7 @@ jobs:
     name: 'create_files'
 
     container:
-      image: ghcr.io/fusion-energy/fusion-neutronics-workflow
+      image: ghcr.io/fusion-energy/fusion-neutronics-workflow-avx
 
     steps:
       - uses: actions/checkout@v2
