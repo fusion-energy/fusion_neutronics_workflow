@@ -35,6 +35,8 @@
 FROM ghcr.io/openmc-data-storage/miniconda3_4.9.2_endfb-7.1_nndc_tendl_2019:latest
 
 ARG compile_cores=1
+ARG include_avx=true
+
 
 ENV LANG=C.UTF-8 LC_ALL=C.UTF-8 \
     PATH=/opt/openmc/bin:$PATH \
@@ -107,7 +109,8 @@ RUN apt-get install -y libxcb-xinerama0
 # embree from conda is not supported yet
 # conda install -c conda-forge embree >> version: 2.17.7
 # requested version "3.6.1"
-RUN git clone --shallow-submodules --single-branch --branch v3.12.2 --depth 1 https://github.com/embree/embree.git && \
+RUN if [ "$include_avx" = "false" ] ; then \
+    git clone --shallow-submodules --single-branch --branch v3.12.2 --depth 1 https://github.com/embree/embree.git && \
     cd embree && \
     mkdir build && \
     cd build && \
@@ -117,6 +120,16 @@ RUN git clone --shallow-submodules --single-branch --branch v3.12.2 --depth 1 ht
              # https://openmc.discourse.group/t/dagmc-geometry-open-mc-aborted-unexpectedly/1369/24?u=pshriwise
              -DEMBREE_MAX_ISA=NONE \
              -DEMBREE_ISA_SSE42=ON && \
+    make -j"$compile_cores" && \
+    make -j"$compile_cores" install
+
+RUN if [ "$include_avx" = "true" ] ; then \
+    git clone --shallow-submodules --single-branch --branch v3.12.2 --depth 1 https://github.com/embree/embree.git && \
+    cd embree && \
+    mkdir build && \
+    cd build && \
+    cmake .. -DCMAKE_INSTALL_PREFIX=.. \
+             -DEMBREE_ISPC_SUPPORT=OFF && \
     make -j"$compile_cores" && \
     make -j"$compile_cores" install
 
