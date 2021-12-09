@@ -1,6 +1,17 @@
+[![CI with docker build](https://github.com/fusion-energy/fusion_neutronics_workflow/actions/workflows/ci_with_docker_build.yml/badge.svg)](https://github.com/fusion-energy/fusion_neutronics_workflow/actions/workflows/ci_with_docker_build.yml)
+
+[![CI with install](https://github.com/fusion-energy/fusion_neutronics_workflow/actions/workflows/ci_with_install.yml/badge.svg)](https://github.com/fusion-energy/fusion_neutronics_workflow/actions/workflows/ci_with_install.yml)
+
+<!-- [![docker-publish-release](https://github.com/fusion-energy/fusion_neutronics_workflow/actions/workflows/docker_publish.yml/badge.svg)](https://github.com/fusion-energy/fusion_neutronics_workflow/actions/workflows/docker_publish.yml) -->
+
+
 # Fusion Neutronics Workflow
 
-![fusion neutronics workflow](https://user-images.githubusercontent.com/8583900/141863141-9f04c63b-0fcb-4881-b7db-0d3001fd5fdc.png)
+![fusion neutronics workflow](https://user-images.githubusercontent.com/8583900/145485618-d4733a82-4f8a-4f8d-a669-7419f076a567.png)
+
+Diagram showing the connectivity of software packages that make up the Fusion
+Neutronics Workflow. Software that the user interacts with directly are shown
+in blue.
 
 This repository contains a containerized neutronics workflow for carrying out
 standard neutronics simulations in a repeatable manner.
@@ -44,7 +55,6 @@ docker run -it ghcr.io/fusion-energy/fusion-neutronics-workflow
 
 Links to the packages that are utilized by the fusion-neutronics-workflow
 
-<!--TODO * `stl_to_h5m <https://github.com/fusion-energy/stl_to_h5m) allows automated conversion of stl files to h5m files compatible with DAGMC enabled neutronics codes. -->
 
 * Open source projects created and maintained
 
@@ -64,16 +74,31 @@ Links to the packages that are utilized by the fusion-neutronics-workflow
     allows one to quickly utilise the h5m geometry files in a range of
     standard OpenMC based neutronics simulations.
 
-    * [openmc_data_downloader](https://github.com/openmc-data-storage/openmc_data_downloader) performs on the fly downloading of nuclear data
-    needed for OpenMC neutronics simulations.
-
-    * [openmc_tally_unit_converter](https://github.com/openmc-data-storage/openmc_tally_unit_converter) converts the units of common tally such as
-    heating, DPA, effective dose into user specified units. 
-
     * [neutronics-material-maker](https://github.com/fusion-energy/neutronics_material_maker)
     Create and customise materials from an internal database or from your own
     recipe, export to a wide range of neutronics codes.
 
+    * [openmc_tally_unit_converter](https://github.com/openmc-data-storage/openmc_tally_unit_converter) converts the units of common tally such as
+    heating, DPA, effective dose into user specified units. 
+
+    * [openmc_data_downloader](https://github.com/openmc-data-storage/openmc_data_downloader) performs on the fly downloading of nuclear data
+    needed for OpenMC neutronics simulations.
+
+    * [openmc-plasma-source](https://github.com/fusion-energy/openmc-plasma-source/)
+
+    * [spectrum_plotter](https://github.com/fusion-energy/spectrum_plotter)
+
+    * [openmc_mesh_tally_to_vtk](https://github.com/fusion-energy/openmc_mesh_tally_to_vtk)
+
+    * [regular_mesh_plotter](https://github.com/fusion-energy/regular_mesh_plotter)
+
+    * [dagmc_geometry_slice_plotter](https://github.com/fusion-energy/dagmc_geometry_slice_plotter
+)
+    * [dagmc_bounding_box/](https://github.com/fusion-energy/dagmc_bounding_box/)
+
+    * [remove_dagmc_tags](https://github.com/svalinn/remove_dagmc_tags)
+
+    * [dagmc_h5m_file_inspector](https://github.com/fusion-energy/dagmc_h5m_file_inspector)
 
 * Open source projects that are utilized and contributed to
 
@@ -104,7 +129,7 @@ Links to the packages that are utilized by the fusion-neutronics-workflow
     * [Embree](https://github.com/embree/embree) high-performance ray tracing
        kernels
     
-    * Scipy, Numpy, Plotly Pint and other standard scientific Python packages
+    * Scipy, Numpy, Plotly, Pint and other standard scientific Python packages
 
 
 * Commercial codes (with non commercial license available)
