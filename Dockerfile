@@ -23,6 +23,10 @@
 #   true false
 #   controls if the Embree is built to use AVX instruction set (true) or not (false). AVX is not supported by all CPUs 
 
+#  docker build -t fusion-neutronics-workflow --build-arg compile_cores=7 --build-arg build_double_down=OFF .
+#  docker build -t fusion-neutronics-workflow:embree --build-arg compile_cores=7 --build-arg build_double_down=ON --build-arg include_avx=true .
+#  docker build -t fusion-neutronics-workflow:embree-avx --build-arg compile_cores=7 --build-arg build_double_down=ON --build-arg include_avx=false .
+
 
 # TODO save build time by basing this on FROM ghcr.io/fusion-energy/paramak:latest
 # This can't be done currently as the base images uses conda installs for moab / dagmc which don't compile with OpenMC
@@ -107,7 +111,7 @@ RUN apt-get install -y libxcb-xinerama0
 # added following two lines to allow use on AMD CPUs see discussion
 # https://openmc.discourse.group/t/dagmc-geometry-open-mc-aborted-unexpectedly/1369/24?u=pshriwise  
 RUN if [ "$build_double_down" = "ON" ] ; \
-        then git clone --shallow-submodules --single-branch --branch v3.12.2 --depth 1 https://github.com/embree/embree.git \
+        then git clone --shallow-submodules --single-branch --branch v3.12.2 --depth 1 https://github.com/embree/embree.git ; \
         cd embree ; \
         mkdir build ; \
         cd build ; \
