@@ -36,6 +36,7 @@ FROM ghcr.io/openmc-data-storage/miniconda3_4.9.2_endfb-7.1_nndc_tendl_2019:late
 
 ARG compile_cores=1
 ARG include_avx=true
+ARG build_double_down=OFF
 
 
 ENV LANG=C.UTF-8 LC_ALL=C.UTF-8 \
@@ -183,7 +184,7 @@ RUN mkdir DAGMC && \
     cd build && \
     cmake ../DAGMC -DBUILD_TALLY=ON \
                    -DMOAB_DIR=/MOAB \
-                   -DDOUBLE_DOWN=ON \
+                   -DDOUBLE_DOWN=${build_double_down} \
                    -DBUILD_STATIC_EXE=OFF \
                    -DBUILD_STATIC_LIBS=OFF \
                    -DCMAKE_INSTALL_PREFIX=/DAGMC/ \
