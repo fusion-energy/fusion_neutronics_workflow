@@ -5,30 +5,24 @@
 
 # To download the prebuild image
 # docker pull ghcr.io/fusion-energy/fusion-neutronics-workflow
+# docker pull ghcr.io/fusion-energy/fusion-neutronics-workflow:embree
+# docker pull ghcr.io/fusion-energy/fusion-neutronics-workflow:embree-avx
 
 # To build this Dockerfile into a docker image:
 # docker build -t fusion-neutronics-workflow .
 
-# To build this Dockerfile and use multiple cores to compile:
-# docker build -t fusion-neutronics-workflow --build-arg compile_cores=7 .
 
-# To run the locally built Docker image:
-# docker run -it fusion-neutronics-workflow
+# To build this Dockerfile with different options --build-arg can be used
+# --build-arg compile_cores=1
+#   int
+#   number of cores to compile codes with
+# --build-arg build_double_down=OFF
+#   ON OFF
+#   controls if DAGMC is built with double down (ON) or not (OFF). Note that if double down is OFF then Embree is not included
+# --build-arg include_avx=true
+#   true false
+#   controls if the Embree is built to use AVX instruction set (true) or not (false). AVX is not supported by all CPUs 
 
-# To run the prebuilt Docker image:
-# docker run -it ghcr.io/fusion-energy/fusion-neutronics-workflow
-
-# Run with the following command for a shared folder between base OS and the
-# locally built docker image
-# docker run -it -v $PWD:/local_dir fusion-neutronics-workflow
-
-# Run with the following command for a shared folder between base OS and the
-# locally built docker image
-# docker run -it -v $PWD:/local_dir fusion-neutronics-workflow
-
-# Run with the following command for a shared folder between base OS and the
-# prebuild docker image
-# docker run -it -v $PWD:/local_dir ghcr.io/fusion-energy/fusion-neutronics-workflow
 
 # TODO save build time by basing this on FROM ghcr.io/fusion-energy/paramak:latest
 # This can't be done currently as the base images uses conda installs for moab / dagmc which don't compile with OpenMC
@@ -112,23 +106,24 @@ RUN apt-get install -y libxcb-xinerama0
 # requested version "3.6.1"
 # added following two lines to allow use on AMD CPUs see discussion
 # https://openmc.discourse.group/t/dagmc-geometry-open-mc-aborted-unexpectedly/1369/24?u=pshriwise  
-RUN git clone --shallow-submodules --single-branch --branch v3.12.2 --depth 1 https://github.com/embree/embree.git \
-    && cd embree \
-    && mkdir build \
-    && cd build ; \
-    if [ "$include_avx" = "false" ] ; then \
-        cmake .. -DCMAKE_INSTALL_PREFIX=.. \
-                -DEMBREE_ISPC_SUPPORT=OFF \
-                -DEMBREE_MAX_ISA=NONE \
-                -DEMBREE_ISA_SSE42=ON ; \
-    fi ; \
-    if [ "$include_avx" = "true" ] ; then \
-        cmake .. -DCMAKE_INSTALL_PREFIX=.. \
-                -DEMBREE_ISPC_SUPPORT=OFF ; \
-    fi ; \
-    make -j"$compile_cores" \
-    && make -j"$compile_cores" install
-
+RUN if [ "$build_double_down" = "ON" ] ; \
+        then git clone --shallow-submodules --single-branch --branch v3.12.2 --depth 1 https://github.com/embree/embree.git \
+        cd embree ; \
+        mkdir build ; \
+        cd build ; \
+        if [ "$include_avx" = "false" ] ; \
+            then cmake .. -DCMAKE_INSTALL_PREFIX=.. \
+                        -DEMBREE_ISPC_SUPPORT=OFF \
+                        -DEMBREE_MAX_ISA=NONE \
+                        -DEMBREE_ISA_SSE42=ON ; \
+        fi ; \
+        if [ "$include_avx" = "true" ] ; \
+            then cmake .. -DCMAKE_INSTALL_PREFIX=.. \
+                        -DEMBREE_ISPC_SUPPORT=OFF ; \
+        fi ; \
+        make -j"$compile_cores" ; \
+        make -j"$compile_cores" install ; \
+    fi
 
 # Clone and install MOAB
 RUN mkdir MOAB && \
@@ -159,15 +154,17 @@ RUN mkdir MOAB && \
 
 
 # Clone and install Double-Down
-RUN git clone --shallow-submodules --single-branch --branch v1.0.0 --depth 1 https://github.com/pshriwise/double-down.git && \
-    cd double-down && \
-    mkdir build && \
-    cd build && \
-    cmake .. -DMOAB_DIR=/MOAB \
-             -DCMAKE_INSTALL_PREFIX=.. \
-             -DEMBREE_DIR=/embree && \
-    make -j"$compile_cores" && \
-    make -j"$compile_cores" install
+RUN if [ "$build_double_down" = "ON" ] ; \
+        then git clone --shallow-submodules --single-branch --branch v1.0.0 --depth 1 https://github.com/pshriwise/double-down.git && \
+        cd double-down ; \
+        mkdir build ; \
+        cd build ; \
+        cmake .. -DMOAB_DIR=/MOAB \
+                -DCMAKE_INSTALL_PREFIX=.. \
+                -DEMBREE_DIR=/embree ; \
+        make -j"$compile_cores" ; \
+        make -j"$compile_cores" install ; \
+    fi
 
 
 # Clone and install DAGMC
