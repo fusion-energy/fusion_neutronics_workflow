@@ -142,3 +142,4 @@ dmypy.json
 *.stl
 *.png
 *.vtk
+*.zip

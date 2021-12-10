@@ -42,7 +42,7 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           push: true
-          tags: ghcr.io/fusion-energy/fusion-neutronics-workflow-no-avx
+          tags: ghcr.io/fusion-energy/fusion-neutronics-workflow:embree
           build-args: |
             include_avx=false
             build_double_down=ON
@@ -63,7 +63,7 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           push: true
-          tags: ghcr.io/fusion-energy/fusion-neutronics-workflow-avx
+          tags: ghcr.io/fusion-energy/fusion-neutronics-workflow:embree-avx
           build-args: |
             include_avx=true
             build_double_down=ON
@@ -74,7 +74,7 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           push: true
-          tags: ghcr.io/fusion-energy/fusion-neutronics-workflow-no-dd
+          tags: ghcr.io/fusion-energy/fusion-neutronics-workflow
           build-args: |
             include_avx=true
             build_double_down=OFF
@@ -88,7 +88,7 @@ jobs:
     name: 'create_files'
 
     container:
-      image: ghcr.io/fusion-energy/fusion-neutronics-workflow-no-avx
+      image: ghcr.io/fusion-energy/fusion-neutronics-workflow
 
     steps:
       - uses: actions/checkout@v2
@@ -121,18 +121,19 @@ jobs:
       #     mbconvert stage_2_output/unstructured_mesh.cub stage_2_output/unstructured_mesh.h5m
       #     python 2_run_neutronics_simulation.py
 
-      - name: Upload artifact for CI
-        uses: actions/upload-artifact@v2
-        with:
-          name: output_files_produced.zip
-          path: output_files_produced.zip
-          if-no-files-found: error # 'warn' or 'ignore' are also available, defaults to `warn` 
 
       - name: compress files
         run: |
           apt-get -y update
           apt-get -y install zip
           zip -r output_files_produced.zip example_*
+
+      - name: Upload artifact for CI
+        uses: actions/upload-artifact@v2
+        with:
+          name: output_files_produced.zip
+          path: output_files_produced.zip
+          if-no-files-found: error # 'warn' or 'ignore' are also available, defaults to `warn` 
 
       - name: Upload files into the release
         uses: svenstaro/upload-release-action@v2

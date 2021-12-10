@@ -43,6 +43,8 @@ that is:
 - Documented - documentation of installation procedures, use cases, examples,
     tutorials and even demonstration videos are all available.
 
+# Dockerfile
+
 The Dockerfile can build locally or a prebuilt one can be downloaded with
 ```bash
 docker pull ghcr.io/fusion-energy/fusion-neutronics-workflow
@@ -53,8 +55,22 @@ The docker image can then be run with
 docker run -it ghcr.io/fusion-energy/fusion-neutronics-workflow
 ```
 
-Links to the packages that are utilized by the fusion-neutronics-workflow
+There are additional higher performance docker images available if your CPU
+supports vectorization instructions available Embree.
 
+Download a prebuilt docker image with Embree and Double Down enabled
+```bash
+docker pull ghcr.io/fusion-energy/fusion-neutronics-workflow:embree
+```
+
+Download a prebuilt docker image with Embree compiled with AVX instruction set and Double Down enabled
+```bash
+docker pull ghcr.io/fusion-energy/fusion-neutronics-workflow:embree-avx
+```
+
+# Software Packages included
+
+Links to the packages that are utilized by the fusion-neutronics-workflow
 
 * Open source projects created and maintained
 
@@ -92,9 +108,9 @@ Links to the packages that are utilized by the fusion-neutronics-workflow
 
     * [regular_mesh_plotter](https://github.com/fusion-energy/regular_mesh_plotter)
 
-    * [dagmc_geometry_slice_plotter](https://github.com/fusion-energy/dagmc_geometry_slice_plotter
-)
-    * [dagmc_bounding_box/](https://github.com/fusion-energy/dagmc_bounding_box/)
+    * [dagmc_geometry_slice_plotter](https://github.com/fusion-energy/dagmc_geometry_slice_plotter)
+
+    * [dagmc_bounding_box](https://github.com/fusion-energy/dagmc_bounding_box)
 
     * [remove_dagmc_tags](https://github.com/svalinn/remove_dagmc_tags)
 
