@@ -13,13 +13,13 @@
 
 
 # To build this Dockerfile with different options --build-arg can be used
-# --build-arg compile_cores 
+# --build-arg compile_cores=1
 #   int
 #   number of cores to compile codes with
-# --build-arg build_double_down
+# --build-arg build_double_down=OFF
 #   ON OFF
 #   controls if DAGMC is built with double down (ON) or not (OFF). Note that if double down is OFF then Embree is not included
-# --build-arg include_avx
+# --build-arg include_avx=true
 #   true false
 #   controls if the Embree is built to use AVX instruction set (true) or not (false). AVX is not supported by all CPUs 
 
@@ -107,22 +107,22 @@ RUN apt-get install -y libxcb-xinerama0
 # added following two lines to allow use on AMD CPUs see discussion
 # https://openmc.discourse.group/t/dagmc-geometry-open-mc-aborted-unexpectedly/1369/24?u=pshriwise  
 RUN if [ "$build_double_down" = "ON" ] ; \
-    then git clone --shallow-submodules --single-branch --branch v3.12.2 --depth 1 https://github.com/embree/embree.git \
-    cd embree ; \
-    mkdir build ; \
-    cd build ; \
-    if [ "$include_avx" = "false" ] ; \
-        then cmake .. -DCMAKE_INSTALL_PREFIX=.. \
-                      -DEMBREE_ISPC_SUPPORT=OFF \
-                      -DEMBREE_MAX_ISA=NONE \
-                      -DEMBREE_ISA_SSE42=ON ; \
-    fi ; \
-    if [ "$include_avx" = "true" ] ; \
-        then cmake .. -DCMAKE_INSTALL_PREFIX=.. \
-                      -DEMBREE_ISPC_SUPPORT=OFF ; \
-    fi ; \
-    make -j"$compile_cores" ; \
-    make -j"$compile_cores" install ; \
+        then git clone --shallow-submodules --single-branch --branch v3.12.2 --depth 1 https://github.com/embree/embree.git \
+        cd embree ; \
+        mkdir build ; \
+        cd build ; \
+        if [ "$include_avx" = "false" ] ; \
+            then cmake .. -DCMAKE_INSTALL_PREFIX=.. \
+                        -DEMBREE_ISPC_SUPPORT=OFF \
+                        -DEMBREE_MAX_ISA=NONE \
+                        -DEMBREE_ISA_SSE42=ON ; \
+        fi ; \
+        if [ "$include_avx" = "true" ] ; \
+            then cmake .. -DCMAKE_INSTALL_PREFIX=.. \
+                        -DEMBREE_ISPC_SUPPORT=OFF ; \
+        fi ; \
+        make -j"$compile_cores" ; \
+        make -j"$compile_cores" install ; \
     fi
 
 # Clone and install MOAB
@@ -154,15 +154,17 @@ RUN mkdir MOAB && \
 
 
 # Clone and install Double-Down
-RUN git clone --shallow-submodules --single-branch --branch v1.0.0 --depth 1 https://github.com/pshriwise/double-down.git && \
-    cd double-down && \
-    mkdir build && \
-    cd build && \
-    cmake .. -DMOAB_DIR=/MOAB \
-             -DCMAKE_INSTALL_PREFIX=.. \
-             -DEMBREE_DIR=/embree && \
-    make -j"$compile_cores" && \
-    make -j"$compile_cores" install
+RUN if [ "$build_double_down" = "ON" ] ; \
+        then git clone --shallow-submodules --single-branch --branch v1.0.0 --depth 1 https://github.com/pshriwise/double-down.git && \
+        cd double-down ; \
+        mkdir build ; \
+        cd build ; \
+        cmake .. -DMOAB_DIR=/MOAB \
+                -DCMAKE_INSTALL_PREFIX=.. \
+                -DEMBREE_DIR=/embree ; \
+        make -j"$compile_cores" ; \
+        make -j"$compile_cores" install ; \
+    fi
 
 
 # Clone and install DAGMC
