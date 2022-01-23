@@ -24,20 +24,20 @@ geometry = odw.Geometry(
 # sets the material to use
 materials = odw.Materials(
     h5m_filename='dagmc.h5m',
-    correspondence_dict={"mat1": "eurofer"}
+    correspondence_dict={"mat_my_material": "eurofer"}
 )
 
 # creates a cell tally for neutron flux
 tally1 = odw.CellTally(
     tally_type="neutron_flux",
-    target="mat1",
+    target="mat_my_material",
     materials=materials
 )
 
 # creates a cell tally for neutron spectra
 tally2 = odw.CellTally(
     tally_type="neutron_spectra",
-    target="mat1",
+    target="mat_my_material",
     materials=materials
 )
 
@@ -63,7 +63,7 @@ statepoint_file = my_model.run()
 statepoint = openmc.StatePoint(filepath=statepoint_file)
 
 # gets the first tally using its name
-my_tally_1 = statepoint.get_tally(name="mat1_neutron_flux")
+my_tally_1 = statepoint.get_tally(name="mat_my_material_neutron_flux")
 
 # gets number of neutron for a 1.3 mega joule shot
 source_strength = otuc.find_source_strength(fusion_energy_per_second_or_per_pulse=1.3e6)
@@ -78,7 +78,7 @@ result = otuc.process_tally(
 print(f"flux per second = {result}", end="\n\n")
 
 # gets the second tally using its name
-my_tally_2 = statepoint.get_tally(name="mat1_neutron_spectra")
+my_tally_2 = statepoint.get_tally(name="mat_my_material_neutron_spectra")
 
 # returns the tally converted to MeV, scaled and normalisation for source strength
 result = otuc.process_spectra_tally(

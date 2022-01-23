@@ -1,9 +1,7 @@
 
-paramak==0.6.5
+# paramak==0.6.5 # needs UNRELEASED version 0.7.0
 openmc-dagmc-wrapper==0.3.1
 openmc-plasma-source==0.2.3
-cad_to_h5m==0.2.3
-stl_to_h5m==0.0.2
 openmc_tally_unit_converter==0.3.0
 spectrum_plotter==0.2.1
 regular_mesh_plotter==0.2.1
