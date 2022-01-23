@@ -7,24 +7,23 @@ import openmc_dagmc_wrapper as odw
 import openmc_plasma_source as ops
 
 
-# could set to dagmc.h5m if the imprinted and merged geometry is preferred
-my_h5m_filename = "dagmc_not_merged.h5m"
-# my_h5m_filename='dagmc.h5m'
+geometry = odw.Geometry(h5m_filename='dagmc.h5m')
 
 # this links the material tags in the dagmc h5m file with materials.
 # these materials are input as strings so they will be looked up in the
 # neutronics material maker package
 material_tag_to_material_dict = {
-    "inboard_tf_coils": "copper",
-    "center_column_shield": "tungsten",
-    "firstwall": "tungsten",
-    "blanket": "Li4SiO4",
-    "blanket_rear_wall": "eurofer",
-    "divertor": "tungsten",
+    "mat_inboard_tf_coils": "copper",
+    "mat_center_column_shield": "tungsten",
+    "mat_firstwall": "tungsten",
+    "mat_blanket": "Li4SiO4",
+    "mat_blanket_rear_wall": "eurofer",
+    "mat_divertor_upper": "tungsten",
+    "mat_divertor_lower": "tungsten",
 }
 
 materials = odw.Materials(
-    h5m_filename=my_h5m_filename,
+    h5m_filename=geometry.h5m_filename,
     correspondence_dict=material_tag_to_material_dict,
 )
 
@@ -35,7 +34,7 @@ materials = odw.Materials(
 #     materials=materials
 # )
 
-geometry = odw.Geometry(h5m_filename=my_h5m_filename)
+# gets the corners of the geometry for use later
 bounding_box = geometry.corners()
 
 tally1 = odw.MeshTally3D(
@@ -55,7 +54,7 @@ settings.batches = 4
 settings.particles = 10000
 # assigns a ring source of DT energy neutrons to the source using the
 # openmc_plasma_source package
-settings.source = ops.FusionRingSource(fuel="DT", radius=350)
+settings.source = ops.FusionRingSource(fuel="DT", radius=350, angles=(0, 3.14))
 
 
 my_model = openmc.Model(
