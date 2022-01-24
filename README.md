@@ -7,7 +7,7 @@
 
 # Fusion Neutronics Workflow
 
-![fusion neutronics workflow](https://user-images.githubusercontent.com/8583900/145485618-d4733a82-4f8a-4f8d-a669-7419f076a567.png)
+![fusion neutronics workflow](https://user-images.githubusercontent.com/8583900/150701623-29fbf50b-0203-4818-b318-2f3a996e1db7.png)
 
 Diagram showing the connectivity of software packages that make up the Fusion
 Neutronics Workflow. Software that the user interacts with directly are shown
@@ -116,16 +116,17 @@ Links to the packages that are utilized by the fusion-neutronics-workflow
 
     * [dagmc_h5m_file_inspector](https://github.com/fusion-energy/dagmc_h5m_file_inspector)
 
+    * [brep_to_h5m](https://github.com/fusion-energy/brep_to_h5m)
+
+    * [brep_part_finder](https://github.com/fusion-energy/brep_part_finder)
+
 * Open source projects that are utilized and contributed to
 
     * [OpenMC](https://github.com/openmc-dev/openmc) The OpenMC project, a
     Monte Carlo particle transport code based on modern methods.
 
     * [DAGMC](https://github.com/svalinn/DAGMC) Direct Accelerated Geometry
-    Monte Carlo Toolkit 
-
-    * [Svalinn Cubit Plugin](https://github.com/svalinn/Cubit-plugin/) a plugin
-    and command extensions for Cubit that allows h5m files to be exported.
+    Monte Carlo Toolkit
 
     * [SphinxCadQuery](https://github.com/CadQuery/sphinxcadquery)
 
@@ -145,12 +146,7 @@ Links to the packages that are utilized by the fusion-neutronics-workflow
     * [Embree](https://github.com/embree/embree) high-performance ray tracing
        kernels
     
+    * [Gmsh](https://gitlab.onelab.info/gmsh/gmsh) A three-dimensional finite
+       element mesh generator with built-in pre- and post-processing facilities
+    
     * Scipy, Numpy, Plotly, Pint and other standard scientific Python packages
-
-
-* Commercial codes (with non commercial license available)
-
-    * [Coreform Cubit](https://github.com/svalinn/Cubit-plugin/) - advanced
-    meshing for challenging simulations. Supports imprinting and merging of
-    surfaces which speed up the neutronics transport time required for
-    simulations through faceted geometry.

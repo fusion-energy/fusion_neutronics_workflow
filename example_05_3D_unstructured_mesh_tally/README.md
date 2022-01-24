@@ -1,3 +1,5 @@
+#  WORK IN PROGRESS. NOT READY FOR USE AT THE MOMENT
+
 This is a minimal example that creates a single volume CAD file in stp file
 format, then converts the file to a DAGMC neutronics model and creates a tet
 mesh of the volume, then runs an OpenMC simulation to get a unstrucuted mesh tally.
