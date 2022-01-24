@@ -205,11 +205,19 @@ RUN cd /opt && \
 COPY requirements.txt requirements.txt
 RUN pip install -r requirements.txt
 
+# solves binary incompatabilitiy error
+RUN pip install numpy --upgrade
+
+
+# installs python packages and nuclear data (quick as it does not overwrite existing h5 files)
+RUN openmc_data_downloader -d nuclear_data -e all -i H3 -l ENDFB-7.1-NNDC TENDL-2019 -p neutron photon --no-overwrite
+
+# solves OSError: libXft.so.2: cannot open shared object file: No such file or directory
+RUN apt-get install libxft2 
+#libxft2:i386 lib64ncurses5
+#RUN apt install libxext6
+#RUN apt install libxext6:i386
 RUN pip install https://github.com/fusion-energy/paramak/archive/adding_export_h5m_using_brep_gmsh_method.zip
-
-# installs python packages and nuclear data
-# RUN openmc_data_downloader -d nuclear_data -e all -i H3 -l ENDFB-7.1-NNDC TENDL-2019 -p neutron photon --no-overwrite
-
 
 # setting enviromental varibles
 ENV OPENMC_CROSS_SECTIONS=/nuclear_data/cross_sections.xml
