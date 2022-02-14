@@ -131,7 +131,7 @@ Links to the packages that are utilized by the fusion-neutronics-workflow
     * [SphinxCadQuery](https://github.com/CadQuery/sphinxcadquery)
 
 
-* OpenMC source projects utilized in the software stack
+* Open source projects utilized in the software stack
 
     * [MOAB and pymoab](https://github.com/svalinn/Cubit-plugin/) the
       Mesh-Oriented datABase MOAB is a component for representing and evaluating
