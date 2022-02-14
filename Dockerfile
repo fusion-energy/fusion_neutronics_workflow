@@ -67,7 +67,8 @@ RUN conda install -c conda-forge -c cadquery cadquery=master && \
     pip install jupyter-cadquery==2.1.0
 
 # Installing Gmsh
-RUN conda install -c conda-forge gmsh
+RUN conda install -c conda-forge gmsh && \
+    conda install -c conda-forge python-gmsh
 
 # Install neutronics dependencies from Debian package manager
 RUN apt-get install -y \
