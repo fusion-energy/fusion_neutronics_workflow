@@ -217,7 +217,6 @@ RUN apt-get install libxft2
 #libxft2:i386 lib64ncurses5
 #RUN apt install libxext6
 #RUN apt install libxext6:i386
-RUN pip install https://github.com/fusion-energy/paramak/archive/adding_export_h5m_using_brep_gmsh_method.zip
 
 # setting enviromental varibles
 ENV OPENMC_CROSS_SECTIONS=/nuclear_data/cross_sections.xml
