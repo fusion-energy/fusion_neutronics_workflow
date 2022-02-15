@@ -2,12 +2,12 @@
 
 [![CI with install](https://github.com/fusion-energy/fusion_neutronics_workflow/actions/workflows/ci_with_install.yml/badge.svg)](https://github.com/fusion-energy/fusion_neutronics_workflow/actions/workflows/ci_with_install.yml)
 
-<!-- [![docker-publish-release](https://github.com/fusion-energy/fusion_neutronics_workflow/actions/workflows/docker_publish.yml/badge.svg)](https://github.com/fusion-energy/fusion_neutronics_workflow/actions/workflows/docker_publish.yml) -->
+[![docker-publish-release](https://github.com/fusion-energy/fusion_neutronics_workflow/actions/workflows/docker_publish.yml/badge.svg)](https://github.com/fusion-energy/fusion_neutronics_workflow/actions/workflows/docker_publish.yml)
 
 
 # Fusion Neutronics Workflow
 
-![fusion neutronics workflow](https://user-images.githubusercontent.com/8583900/145485618-d4733a82-4f8a-4f8d-a669-7419f076a567.png)
+![fusion neutronics workflow](https://user-images.githubusercontent.com/8583900/150701623-29fbf50b-0203-4818-b318-2f3a996e1db7.png)
 
 Diagram showing the connectivity of software packages that make up the Fusion
 Neutronics Workflow. Software that the user interacts with directly are shown
@@ -27,7 +27,8 @@ that is:
 - Automated - the entire workflow can be run automatically. Care has been taken
     to code out all manual processes so that the neutronics analysis can be
     performed in an API manner. As a result it is therefore possible to drive
-    the workflow with machine learning, optimization or parameter space sampling methods.
+    the workflow with machine learning, optimization or parameter space
+    sampling methods.
 - Scalable - by using efficient interfaces (Embree, Double Down) and
     accelerated geometry (DAGMC) together with scalable Monte Carlo transport
     (OpenMC) the resulting workflow scales well with computational power.
@@ -101,20 +102,30 @@ Links to the packages that are utilized by the fusion-neutronics-workflow
     needed for OpenMC neutronics simulations.
 
     * [openmc-plasma-source](https://github.com/fusion-energy/openmc-plasma-source/)
+    Creates a plasma source as an openmc.source object from input parameters that describe the plasma 
 
     * [spectrum_plotter](https://github.com/fusion-energy/spectrum_plotter)
+    A Python package for creating publication quality plots for neutron / photon / particle spectrum 
 
     * [openmc_mesh_tally_to_vtk](https://github.com/fusion-energy/openmc_mesh_tally_to_vtk)
+    A Python package for converting OpenMC mesh tallies to VTK files and optionally converting the units 
 
     * [regular_mesh_plotter](https://github.com/fusion-energy/regular_mesh_plotter)
+    A Python package for plotting regular mesh tally results from neutronics simulations. 
 
-    * [dagmc_geometry_slice_plotter](https://github.com/fusion-energy/dagmc_geometry_slice_plotter)
+    * [dagmc_geometry_slice_plotter](https://github.com/fusion-energy/dagmc_geometry_slice_plotter) A minimal Python package that produces slice plots through h5m DAGMC geometry files 
 
     * [dagmc_bounding_box](https://github.com/fusion-energy/dagmc_bounding_box)
+    Finds the bounding box and related properties of a DAGMC geometry 
 
-    * [remove_dagmc_tags](https://github.com/svalinn/remove_dagmc_tags)
+    * [remove_dagmc_tags](https://github.com/svalinn/remove_dagmc_tags) A python package and command line tool for removing DAGMC tags such as graveyard and vacuum 
 
     * [dagmc_h5m_file_inspector](https://github.com/fusion-energy/dagmc_h5m_file_inspector)
+    Extracts information from DAGMC h5m files including volumes number, material tags 
+
+    * [brep_to_h5m](https://github.com/fusion-energy/brep_to_h5m) Converts Brep CAD geometry files to h5m geometry files compatible with DAGMC simulations 
+
+    * [brep_part_finder](https://github.com/fusion-energy/brep_part_finder) A Python package to identify the part ID number in Brep format CAD files 
 
 * Open source projects that are utilized and contributed to
 
@@ -122,15 +133,12 @@ Links to the packages that are utilized by the fusion-neutronics-workflow
     Monte Carlo particle transport code based on modern methods.
 
     * [DAGMC](https://github.com/svalinn/DAGMC) Direct Accelerated Geometry
-    Monte Carlo Toolkit 
+    Monte Carlo Toolkit
 
-    * [Svalinn Cubit Plugin](https://github.com/svalinn/Cubit-plugin/) a plugin
-    and command extensions for Cubit that allows h5m files to be exported.
-
-    * [SphinxCadQuery](https://github.com/CadQuery/sphinxcadquery)
+    * [SphinxCadQuery](https://github.com/CadQuery/sphinxcadquery) An extension to visualize CadQuery 3D files in your Sphinx documentation 
 
 
-* OpenMC source projects utilized in the software stack
+* Open source projects utilized in the software stack
 
     * [MOAB and pymoab](https://github.com/svalinn/Cubit-plugin/) the
       Mesh-Oriented datABase MOAB is a component for representing and evaluating
@@ -145,12 +153,7 @@ Links to the packages that are utilized by the fusion-neutronics-workflow
     * [Embree](https://github.com/embree/embree) high-performance ray tracing
        kernels
     
+    * [Gmsh](https://gitlab.onelab.info/gmsh/gmsh) A three-dimensional finite
+       element mesh generator with built-in pre- and post-processing facilities
+    
     * Scipy, Numpy, Plotly, Pint and other standard scientific Python packages
-
-
-* Commercial codes (with non commercial license available)
-
-    * [Coreform Cubit](https://github.com/svalinn/Cubit-plugin/) - advanced
-    meshing for challenging simulations. Supports imprinting and merging of
-    surfaces which speed up the neutronics transport time required for
-    simulations through faceted geometry.

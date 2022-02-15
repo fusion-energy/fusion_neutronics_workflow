@@ -3,7 +3,8 @@
 # A surrounding volume called a graveyard is needed for neutronics simulations
 
 import paramak
-from stl_to_h5m import stl_to_h5m
+import os
+
 
 my_reactor = paramak.BallReactor(
     inner_bore_radial_thickness=1,
@@ -20,45 +21,13 @@ my_reactor = paramak.BallReactor(
     elongation=2.75,
     triangularity=0.5,
     number_of_tf_coils=16,
-    rotation_angle=360
+    rotation_angle=180
 )
 
+# exports the reactor shapes as a DAGMC h5m file which can be used as
+# neutronics geometry by OpenMC
+my_reactor.export_dagmc_h5m('dagmc.h5m', exclude=['plasma'])
 
-# This script converts the CAD stp files generated into h5m files that can be
-# used in DAGMC enabled codes. There are two methods of creating the h5m files.
-# In both cases the resulting h5m geometry mesh has volumes tagged with
-# material tags.
-
-# method 1
-# makes a dagmc geometry that has not been imprinted and merged
-
-stl_filenames = my_reactor.export_stl()
-# removes the plasma as this complicates the geometry and has minimal interations with particles
-stl_filenames.remove('plasma.stl')
-compentent_names = my_reactor.name
-compentent_names.remove('plasma')
-
-stl_to_h5m(
-    files_with_tags=[(stl_filename, name) for name, stl_filename in zip(compentent_names, stl_filenames)],
-    h5m_filename='dagmc_not_merged.h5m',
-)
-
-
-# method 2
-# makes a dagmc geometry that has been imprinted and merged and requires cubit
-# from cad_to_h5m import cad_to_h5m
-# stp_filenames = my_reactor.export_stp()
-
-# # removes the plasma as this complicates the geometry and has minimal interations with particles
-# stp_filenames.remove('plasma.stp')
-
-# files_with_tags = [{'cad_filename': stp_filename, 'material_tag': name} for name, stp_filename in zip(compentent_names, stp_filenames)]
-# # produces a list of dictionaries of with cad_filename and material_tag as the keys.
-# # the values are the stp filename and the name of the component
-
-# cad_to_h5m(
-#     files_with_tags=files_with_tags,
-#     make_watertight=True,
-#     h5m_filename='dagmc.h5m',
-#     cubit_path='/opt/Coreform-Cubit-2021.5/bin/',
-# )
+# this converts the neutronics geometry h5m file into a vtk file for
+# visualisation in Paraview or Visit
+os.system('mbconvert dagmc.h5m dagmc.vtk')

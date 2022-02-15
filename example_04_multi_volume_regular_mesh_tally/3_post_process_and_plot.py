@@ -20,10 +20,11 @@ source_strength = otuc.find_source_strength(fusion_energy_per_second_or_per_puls
 
 plot = plot_regular_mesh_tally_with_geometry(
     tally=my_tally_xy,
-    dagmc_file_or_trimesh_object="dagmc_not_merged.h5m",
+    dagmc_file_or_trimesh_object="dagmc.h5m",
     plane_origin=None,
     plane_normal=[0, 0, 1],
     scale=LogNorm(),
+    rotate_mesh=180,
     vmin=None,
     label="(n,Xa) per pulse",
     filename="mesh_tally_xy.png",
@@ -33,9 +34,9 @@ plot = plot_regular_mesh_tally_with_geometry(
 
 plot = plot_regular_mesh_tally_with_geometry(
     tally=my_tally_xz,
-    dagmc_file_or_trimesh_object="dagmc_not_merged.h5m",
-    plane_origin=None,
-    plane_normal=[1, 0, 0],
+    dagmc_file_or_trimesh_object="dagmc.h5m",
+    plane_origin=[0,0.1,0],  # moves the slice 1mm into the 180 degree model to ensure geometry is sliced
+    plane_normal=[0, 1, 0],
     rotate_geometry=90,
     scale=LogNorm(),
     vmin=None,

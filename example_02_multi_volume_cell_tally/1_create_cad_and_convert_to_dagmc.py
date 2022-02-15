@@ -3,6 +3,7 @@
 # A surrounding volume called a graveyard is needed for neutronics simulations
 
 import paramak
+import os
 
 
 my_reactor = paramak.BallReactor(
@@ -20,52 +21,13 @@ my_reactor = paramak.BallReactor(
     elongation=2.75,
     triangularity=0.5,
     number_of_tf_coils=16,
-    rotation_angle=360
+    rotation_angle=180
 )
 
-# exports the reactor shapes to stp files. The list of stp filenames provided
-# is made from the shape names with ".stp" added to each one using python
-# list comprehension.
+# exports the reactor shapes as a DAGMC h5m file which can be used as
+# neutronics geometry by OpenMC
+my_reactor.export_dagmc_h5m('dagmc.h5m')
 
-
-# exports the reactor shapes as separate stp files using default stp filenames
-stp_filenames = my_reactor.export_stp()
-
-
-# This script converts the CAD stp files generated into h5m files that can be
-# used in DAGMC enabled codes. h5m files created in this way are imprinted,
-# merged, faceted and ready for use in OpenMC.
-
-# One of the key aspects of this is the assignment of materials to the volumes present in the CAD files.
-# The stp files along with their material tags are based on the names of the
-# shapes in the reactor using dictionary comprehension.
-
-
-# method uses cubit to create dagmc h5m file.
-
-# files_with_tags = [{'cad_filename':stp_filename, 'material_tag':name} for name, stp_filename in zip(my_reactor.name, stp_filenames)]
-# produces a list of dictionaries of with cad_filename and material_tag as the keys.
-# the values are the stp filename and the name of the component
-# [{'cad_filename': 'plasma.stp', 'material_tag': 'plasma'}, {'cad_filename': 'inboard_tf_coils.stp', 'material_tag': 'inboard_tf_coils'}, {'cad_filename': 'center_column_shield.stp', 'material_tag': 'center_column_shield'}, {'cad_filename': 'firstwall.stp', 'material_tag': 'firstwall'}, {'cad_filename': 'blanket.stp', 'material_tag': 'blanket'}, {'cad_filename': 'blanket_rear_wall.stp', 'material_tag': 'blanket_rear_wall'}, {'cad_filename': 'divertor.stp', 'material_tag': 'divertor'}]
-
-# from cad_to_h5m import cad_to_h5m
-# cad_to_h5m(
-#     files_with_tags=files_with_tags,
-#     h5m_filename='dagmc.h5m',
-#     cubit_path='/opt/Coreform-Cubit-2021.5/bin/'
-# )
-
-
-# in case you don't have Cubit with the Svalin plugin installed you could use
-# stl_to_h5m. This doesn't imprint and merge the geometry so there could be
-# overlaps and tunneling particles.
-from stl_to_h5m import stl_to_h5m
-
-# exports the reactor shapes as separate stl files using default stl filenames
-stl_filenames = my_reactor.export_stl()
-files_with_tags = [(stl_filename, name) for name, stl_filename in zip(my_reactor.name, stl_filenames)]
-
-stl_to_h5m(
-    files_with_tags=files_with_tags,
-    h5m_filename='dagmc_not_imprinted_and_merged.h5m',
-)
+# this converts the neutronics geometry h5m file into a vtk file for
+# visualisation in Paraview or Visit
+os.system('mbconvert dagmc.h5m dagmc.vtk')

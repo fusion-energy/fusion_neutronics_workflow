@@ -28,7 +28,6 @@
 #  docker build -t fusion-neutronics-workflow:embree-avx --build-arg compile_cores=7 --build-arg build_double_down=ON --build-arg include_avx=false .
 
 
-# TODO save build time by basing this on FROM ghcr.io/fusion-energy/paramak:latest
 # This can't be done currently as the base images uses conda installs for moab / dagmc which don't compile with OpenMC
 FROM ghcr.io/openmc-data-storage/miniconda3_4.9.2_endfb-7.1_nndc_tendl_2019:latest
 
@@ -64,8 +63,12 @@ RUN pip install cython
 RUN conda install -c anaconda numpy==1.21.2
 
 # Installing CadQuery
-RUN conda install -c conda-forge -c cadquery cadquery=2.1 && \
+RUN conda install -c conda-forge -c cadquery cadquery=master && \
     pip install jupyter-cadquery==2.1.0
+
+# Installing Gmsh
+RUN conda install -c conda-forge gmsh && \
+    conda install -c conda-forge python-gmsh
 
 # Install neutronics dependencies from Debian package manager
 RUN apt-get install -y \
@@ -88,20 +91,6 @@ RUN apt-get --yes install libeigen3-dev && \
     apt-get --yes install libnetcdf-dev && \
     apt-get --yes install libtbb-dev && \
     apt-get --yes install libglfw3-dev
-
-# install Cubit dependencies
-RUN apt-get install -y libx11-6
-RUN apt-get install -y libxt6
-RUN apt-get install -y libgl1
-RUN apt-get install -y libglu1-mesa
-RUN apt-get install -y libgl1-mesa-glx
-RUN apt-get install -y libxcb-icccm4
-RUN apt-get install -y libxcb-image0
-RUN apt-get install -y libxcb-keysyms1
-RUN apt-get install -y libxcb-render-util0
-RUN apt-get install -y libxkbcommon-x11-0
-RUN apt-get install -y libxcb-randr0
-RUN apt-get install -y libxcb-xinerama0
 
 
 # Clone and install Embree
@@ -196,10 +185,8 @@ RUN mkdir DAGMC && \
 # Clone and install OpenMC with DAGMC
 # TODO clone a specific release when the next release containing (PR 1825) is avaialble.
 RUN cd /opt && \
-    git clone --single-branch --branch develop https://github.com/openmc-dev/openmc.git && \
+    git clone --single-branch --branch v0.13.0 --depth 1 https://github.com/openmc-dev/openmc.git && \
     cd openmc && \
-    # this commit is from this PR https://github.com/openmc-dev/openmc/pull/1900
-    git checkout 0157dc219ff8dca814859b3140c6cef1e78cdee1 && \
     cd /opt/openmc && \
     mkdir build && \
     cd build && \
@@ -212,33 +199,23 @@ RUN cd /opt && \
     cd ..  && \
     pip install -e .[test]
 
-# Download Cubit
-RUN wget -O coreform-cubit-2021.5.deb https://f002.backblazeb2.com/file/cubit-downloads/Coreform-Cubit/Releases/Linux/Coreform-Cubit-2021.5%2B15962_5043ef39-Lin64.deb
-
-# Install cubit
-RUN dpkg -i coreform-cubit-2021.5.deb
-
-# installs svalinn plugin for cubit
-RUN wget https://github.com/svalinn/Cubit-plugin/releases/download/0.2.1/svalinn-plugin_debian-10.10_cubit_2021.5.tgz
-RUN tar -xzvf svalinn-plugin_debian-10.10_cubit_2021.5.tgz -C /opt/Coreform-Cubit-2021.5
-
-# writes a non commercial license file
-RUN mkdir -p /root/.config/Coreform/licenses
-RUN printf 'Fri May 28 2021' >> /root/.config/Coreform/licenses/cubit-learn.lic
-
-# needed to prevent hdf5 conflict between MOAB and Cubit
-ENV HDF5_DISABLE_VERSION_CHECK=1
-
-# helps to identify Cubit related errrors
-ENV CUBIT_VERBOSE=5
 
 
 COPY requirements.txt requirements.txt
 RUN pip install -r requirements.txt
 
-# installs python packages and nuclear data
+# solves binary incompatabilitiy error
+RUN pip install numpy --upgrade
+
+
+# installs python packages and nuclear data (quick as it does not overwrite existing h5 files)
 RUN openmc_data_downloader -d nuclear_data -e all -i H3 -l ENDFB-7.1-NNDC TENDL-2019 -p neutron photon --no-overwrite
 
+# solves OSError: libXft.so.2: cannot open shared object file: No such file or directory
+RUN apt-get install libxft2 
+#libxft2:i386 lib64ncurses5
+#RUN apt install libxext6
+#RUN apt install libxext6:i386
 
 # setting enviromental varibles
 ENV OPENMC_CROSS_SECTIONS=/nuclear_data/cross_sections.xml
