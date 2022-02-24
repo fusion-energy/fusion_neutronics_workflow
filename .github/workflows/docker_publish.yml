@@ -81,7 +81,7 @@ jobs:
             cq_version=2.1
             compile_cores=2
 
-  # upload_workflow_output_files_to_release:
+  upload_workflow_output_files_to_release:
     needs: build_and_push_docker_images
     runs-on: ubuntu-latest
 
