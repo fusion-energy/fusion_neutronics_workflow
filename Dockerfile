@@ -23,12 +23,15 @@
 #   true false
 #   controls if the Embree is built to use AVX instruction set (true) or not (false). AVX is not supported by all CPUs 
 
-#  docker build -t fusion-neutronics-workflow --build-arg compile_cores=7 --build-arg build_double_down=OFF .
-#  docker build -t fusion-neutronics-workflow:embree --build-arg compile_cores=7 --build-arg build_double_down=ON --build-arg include_avx=true .
-#  docker build -t fusion-neutronics-workflow:embree-avx --build-arg compile_cores=7 --build-arg build_double_down=ON --build-arg include_avx=false .
+# example builds
+# simplest quickest build that does not contain the speed benefits of double down
+# docker build -t fusion-neutronics-workflow --build-arg compile_cores=7 --build-arg build_double_down=OFF .
+# medium level build that contain some of the speed benefits of double down
+# docker build -t fusion-neutronics-workflow:embree-avx --build-arg compile_cores=7 --build-arg build_double_down=ON --build-arg include_avx=false .
+# performance level build that contain all of the speed benefits of double down
+# docker build -t fusion-neutronics-workflow:embree --build-arg compile_cores=7 --build-arg build_double_down=ON --build-arg include_avx=true .
 
-
-# This can't be done currently as the base images uses conda installs for moab / dagmc which don't compile with OpenMC
+# base image contains nuclear data
 FROM ghcr.io/openmc-data-storage/miniconda3_4.9.2_endfb-7.1_nndc_tendl_2019:latest
 
 ARG compile_cores=1
@@ -62,13 +65,8 @@ RUN apt-get install -y libgl1-mesa-glx \
 RUN pip install cython
 RUN conda install -c anaconda numpy==1.21.2
 
-# Installing CadQuery
-RUN conda install -c conda-forge -c cadquery cadquery=master && \
-    pip install jupyter-cadquery==2.1.0
-
-# Installing Gmsh
-RUN conda install -c conda-forge gmsh && \
-    conda install -c conda-forge python-gmsh
+# Installing CadQuery add on
+RUN pip install jupyter-cadquery==2.1.0
 
 # Install neutronics dependencies from Debian package manager
 RUN apt-get install -y \
@@ -122,7 +120,7 @@ RUN if [ "$build_double_down" = "ON" ] ; \
 RUN mkdir MOAB && \
     cd MOAB && \
     mkdir build && \
-    git clone --shallow-submodules --single-branch --branch 5.3.0 --depth 1 https://bitbucket.org/fathomteam/moab.git && \
+    git clone --shallow-submodules --single-branch --branch 5.3.1 --depth 1 https://bitbucket.org/fathomteam/moab.git && \
     cd build && \
     cmake ../moab -DENABLE_HDF5=ON \
                   -DENABLE_NETCDF=ON \
@@ -163,13 +161,7 @@ RUN if [ "$build_double_down" = "ON" ] ; \
 # Clone and install DAGMC
 RUN mkdir DAGMC && \
     cd DAGMC && \
-    # change to version 3.2.1 when released
-    # git clone --single-branch --branch 3.2.1 --depth 1 https://github.com/svalinn/DAGMC.git && \
-    git clone --single-branch --branch develop https://github.com/svalinn/DAGMC.git && \
-    cd DAGMC && \
-    # this commit is from this PR https://github.com/svalinn/DAGMC/pull/786
-    git checkout fbd0cdbad100a0fd8d80de42321e69d09fdd67f4 && \
-    cd .. && \
+    git clone --single-branch --branch v3.2.1 --depth 1 https://github.com/svalinn/DAGMC.git && \
     mkdir build && \
     cd build && \
     cmake ../DAGMC -DBUILD_TALLY=ON \
@@ -182,8 +174,7 @@ RUN mkdir DAGMC && \
     make -j"$compile_cores" install && \
     rm -rf /DAGMC/DAGMC /DAGMC/build
 
-# Clone and install OpenMC with DAGMC
-# TODO clone a specific release when the next release containing (PR 1825) is avaialble.
+# Clone OpenMC and install OpenMC with DAGMC
 RUN cd /opt && \
     git clone --single-branch --branch v0.13.0 --depth 1 https://github.com/openmc-dev/openmc.git && \
     cd openmc && \
@@ -200,16 +191,22 @@ RUN cd /opt && \
     pip install -e .[test]
 
 
+RUN conda install -c fusion-energy -c cadquery -c conda-forge paramak_develop
 
-COPY requirements.txt requirements.txt
-RUN pip install -r requirements.txt
+# pip installs latest versions of analysis packages
+RUN pip install openmc-dagmc-wrapper
+RUN pip install openmc-plasma-source
+RUN pip install openmc_tally_unit_converter
+RUN pip install spectrum_plotter
+RUN pip install regular_mesh_plotter
+RUN pip install openmc_data_downloader
 
 # solves binary incompatabilitiy error
 RUN pip install numpy --upgrade
 
 
-# installs python packages and nuclear data (quick as it does not overwrite existing h5 files)
-RUN openmc_data_downloader -d nuclear_data -e all -i H3 -l ENDFB-7.1-NNDC TENDL-2019 -p neutron photon --no-overwrite
+# # installs python packages and nuclear data (quick as it does not overwrite existing h5 files)
+# RUN openmc_data_downloader -d nuclear_data -e all -i H3 -l ENDFB-7.1-NNDC TENDL-2019 -p neutron photon --no-overwrite
 
 # solves OSError: libXft.so.2: cannot open shared object file: No such file or directory
 RUN apt-get install libxft2 
@@ -232,3 +229,10 @@ COPY example_01_single_volume_cell_tally examples/example_01_single_volume_cell_
 COPY example_02_multi_volume_cell_tally examples/example_02_multi_volume_cell_tally/
 COPY example_04_multi_volume_regular_mesh_tally examples/example_04_multi_volume_regular_mesh_tally/
 COPY example_05_3D_unstructured_mesh_tally examples/example_05_3D_unstructured_mesh_tally/
+
+
+#this sets the port, gcr looks for this varible
+ENV PORT 8888
+
+# could switch to --ip='*'
+# CMD ["jupyter", "notebook", "--notebook-dir=/tasks", "--port=8888", "--no-browser", "--ip=0.0.0.0", "--allow-root"]

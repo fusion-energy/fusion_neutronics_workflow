@@ -5,7 +5,6 @@
 import paramak
 import os
 
-
 my_reactor = paramak.BallReactor(
     inner_bore_radial_thickness=1,
     inboard_tf_leg_radial_thickness=30,
