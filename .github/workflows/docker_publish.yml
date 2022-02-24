@@ -101,25 +101,25 @@ jobs:
           python 1_create_cad_and_convert_to_dagmc.py
           python 2_run_neutronics_simulation.py
         
-      # - name: run example_02_multi_volume_cell_tally
-      #   run: |
-      #     cd example_02_multi_volume_cell_tally
-      #     python 1_create_cad_and_convert_to_dagmc.py
-      #     python 2_run_neutronics_simulation.py      
+      - name: run example_02_multi_volume_cell_tally
+        run: |
+          cd example_02_multi_volume_cell_tally
+          python 1_create_cad_and_convert_to_dagmc.py
+          python 2_run_neutronics_simulation.py      
  
-      # - name: run example_04_multi_volume_regular_mesh_tally
-      #   run: |
-      #     cd example_04_multi_volume_regular_mesh_tally
-      #     python 1_create_cad_and_convert_to_dagmc.py
-      #     python 2_run_neutronics_simulation.py       
-      #     python 3_post_process_and_plot.py
+      - name: run example_04_multi_volume_regular_mesh_tally
+        run: |
+          cd example_04_multi_volume_regular_mesh_tally
+          python 1_create_cad_and_convert_to_dagmc.py
+          python 2_run_neutronics_simulation.py       
+          python 3_post_process_and_plot.py
 
-      # - name: run example_05_3D_unstructured_mesh_tally
-      #   run: |
-      #     cd example_05_3D_unstructured_mesh_tally
-      #     python 1_create_cad_and_convert_to_dagmc.py
-      #     mbconvert stage_2_output/unstructured_mesh.cub stage_2_output/unstructured_mesh.h5m
-      #     python 2_run_neutronics_simulation.py
+      - name: run example_05_3D_unstructured_mesh_tally
+        run: |
+          cd example_05_3D_unstructured_mesh_tally
+          python 1_create_cad_and_convert_to_dagmc.py
+          mbconvert stage_2_output/unstructured_mesh.cub stage_2_output/unstructured_mesh.h5m
+          python 2_run_neutronics_simulation.py
 
 
       - name: compress files
