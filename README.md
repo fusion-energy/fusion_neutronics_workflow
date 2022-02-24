@@ -46,6 +46,8 @@ that is:
 
 # Dockerfile
 
+## Quick start
+
 The Dockerfile can build locally or a prebuilt one can be downloaded with
 ```bash
 docker pull ghcr.io/fusion-energy/fusion-neutronics-workflow
@@ -55,6 +57,17 @@ The docker image can then be run with
 ```bash
 docker run -it ghcr.io/fusion-energy/fusion-neutronics-workflow
 ```
+
+## Sharing files
+
+To map a local folder to the docker container a volume mount can be used.
+The following example mounts the local folder that the command is being run from with the ```/home/fusion-neutronics-workflow/examples``` that is inside the docker
+images
+```bash
+docker run -it -v $PWD:/home/fusion-neutronics-workflow/examples ghcr.io/fusion-energy/fusion-neutronics-workflow
+```
+
+## Performance builds
 
 There are additional higher performance docker images available if your CPU
 supports vectorization instructions available Embree.
@@ -68,6 +81,7 @@ Download a prebuilt docker image with Embree compiled with AVX instruction set a
 ```bash
 docker pull ghcr.io/fusion-energy/fusion-neutronics-workflow:embree-avx
 ```
+
 
 # Software Packages included
 
