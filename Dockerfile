@@ -235,4 +235,4 @@ COPY example_05_3D_unstructured_mesh_tally examples/example_05_3D_unstructured_m
 ENV PORT 8888
 
 # could switch to --ip='*'
-CMD ["jupyter", "notebook", "--notebook-dir=/tasks", "--port=8888", "--no-browser", "--ip=0.0.0.0", "--allow-root"]
+# CMD ["jupyter", "notebook", "--notebook-dir=/tasks", "--port=8888", "--no-browser", "--ip=0.0.0.0", "--allow-root"]
