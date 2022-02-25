@@ -137,7 +137,10 @@ jobs:
       - name: Upload files into the release
         uses: svenstaro/upload-release-action@v2
         with:
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          overwrite: true
+          tag: ${{ github.ref }}
           file: output_files_produced.zip
           asset_name: output_files_produced.zip
-          tag: ${{ github.ref }}
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+
+          
