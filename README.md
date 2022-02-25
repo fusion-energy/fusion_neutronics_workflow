@@ -2,7 +2,7 @@
 
 [![CI with install](https://github.com/fusion-energy/fusion_neutronics_workflow/actions/workflows/ci_with_install.yml/badge.svg)](https://github.com/fusion-energy/fusion_neutronics_workflow/actions/workflows/ci_with_install.yml)
 
-[![docker-publish-release](https://github.com/fusion-energy/fusion_neutronics_workflow/actions/workflows/docker_publish.yml/badge.svg)](https://github.com/fusion-energy/fusion_neutronics_workflow/actions/workflows/docker_publish.yml)
+[![docker-publish-release](https://github.com/fusion-energy/fusion_neutronics_workflow/actions/workflows/docker_publish.yml/badge.svg?event=release)](https://github.com/fusion-energy/fusion_neutronics_workflow/actions/workflows/docker_publish.yml)
 
 
 # Fusion Neutronics Workflow
