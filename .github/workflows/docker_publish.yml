@@ -81,65 +81,66 @@ jobs:
             cq_version=2.1
             compile_cores=2
 
-  # TODO fix error when uploading files to a release
-  # upload_workflow_output_files_to_release:
-  #   needs: build_and_push_docker_images
-  #   runs-on: ubuntu-latest
+  upload_workflow_output_files_to_release:
+    needs: build_and_push_docker_images
+    runs-on: ubuntu-latest
 
-  #   name: 'create_files'
+    name: 'create_files'
 
-  #   container:
-  #     image: ghcr.io/fusion-energy/fusion-neutronics-workflow
+    container:
+      image: ghcr.io/fusion-energy/fusion-neutronics-workflow
 
-  #   steps:
-  #     - uses: actions/checkout@v2
+    steps:
+      - uses: actions/checkout@v2
 
-  #     # the examples also appear on the docker image but they are in the
-  #     # /examples subfolder so there is no overlap with these examples
-  #     - name: run example_01_single_volume_cell_tally
-  #       run: |
-  #         cd example_01_single_volume_cell_tally
-  #         python 1_create_cad_and_convert_to_dagmc.py
-  #         python 2_run_neutronics_simulation.py
+      # the examples also appear on the docker image but they are in the
+      # /examples subfolder so there is no overlap with these examples
+      - name: run example_01_single_volume_cell_tally
+        run: |
+          cd example_01_single_volume_cell_tally
+          python 1_create_cad_and_convert_to_dagmc.py
+          python 2_run_neutronics_simulation.py
         
-  #     - name: run example_02_multi_volume_cell_tally
-  #       run: |
-  #         cd example_02_multi_volume_cell_tally
-  #         python 1_create_cad_and_convert_to_dagmc.py
-  #         python 2_run_neutronics_simulation.py      
+      - name: run example_02_multi_volume_cell_tally
+        run: |
+          cd example_02_multi_volume_cell_tally
+          python 1_create_cad_and_convert_to_dagmc.py
+          python 2_run_neutronics_simulation.py      
  
-  #     - name: run example_04_multi_volume_regular_mesh_tally
-  #       run: |
-  #         cd example_04_multi_volume_regular_mesh_tally
-  #         python 1_create_cad_and_convert_to_dagmc.py
-  #         python 2_run_neutronics_simulation.py       
-  #         python 3_post_process_and_plot.py
+      - name: run example_04_multi_volume_regular_mesh_tally
+        run: |
+          cd example_04_multi_volume_regular_mesh_tally
+          python 1_create_cad_and_convert_to_dagmc.py
+          python 2_run_neutronics_simulation.py       
+          python 3_post_process_and_plot.py
 
-  #     # - name: run example_05_3D_unstructured_mesh_tally
-  #     #   run: |
-  #     #     cd example_05_3D_unstructured_mesh_tally
-  #     #     python 1_create_cad_and_convert_to_dagmc.py
-  #     #     mbconvert stage_2_output/unstructured_mesh.cub stage_2_output/unstructured_mesh.h5m
-  #     #     python 2_run_neutronics_simulation.py
+#       - name: run example_05_3D_unstructured_mesh_tally
+#         run: |
+#           cd example_05_3D_unstructured_mesh_tally
+#           python 1_create_cad_and_convert_to_dagmc.py
+#           mbconvert stage_2_output/unstructured_mesh.cub stage_2_output/unstructured_mesh.h5m
+#           python 2_run_neutronics_simulation.py
 
+      - name: compress files
+        run: |
+          apt-get -y update
+          apt-get -y install zip
+          zip -r output_files_produced.zip example_*
 
-  #     - name: compress files
-  #       run: |
-  #         apt-get -y update
-  #         apt-get -y install zip
-  #         zip -r output_files_produced.zip example_*
+      - name: Upload artifact for CI
+        uses: actions/upload-artifact@v2
+        with:
+          name: output_files_produced.zip
+          path: output_files_produced.zip
+          if-no-files-found: error # 'warn' or 'ignore' are also available, defaults to `warn` 
 
-  #     - name: Upload artifact for CI
-  #       uses: actions/upload-artifact@v2
-  #       with:
-  #         name: output_files_produced.zip
-  #         path: output_files_produced.zip
-  #         if-no-files-found: error # 'warn' or 'ignore' are also available, defaults to `warn` 
+      - name: Upload files into the release
+        uses: svenstaro/upload-release-action@v2
+        with:
+          overwrite: true
+          tag: ${{ github.ref }}
+          file: output_files_produced.zip
+          asset_name: output_files_produced.zip
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
 
-  #     - name: Upload files into the release
-  #       uses: svenstaro/upload-release-action@v2
-  #       with:
-  #         repo_token: ${{ secrets.GITHUB_TOKEN }}
-  #         file: output_files_produced.zip
-  #         asset_name: output_files_produced.zip
-  #         tag: ${{ github.ref }}
+          
