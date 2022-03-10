@@ -59,6 +59,8 @@ RUN apt-get install -y libgl1-mesa-glx \
                        curl && \
                        apt-get clean
 
+# solves OSError: libXft.so.2: cannot open shared object file: No such file or directory
+RUN apt-get install libxft2 
 
 # upgrading numpy version
 # RUN pip install "numpy>=1.21.4,<1.30" cython
@@ -66,7 +68,7 @@ RUN pip install cython
 RUN conda install -c anaconda numpy==1.21.2
 
 # Installing CadQuery add on
-RUN pip install jupyter-cadquery==2.1.0
+RUN pip install jupyter-cadquery==3.0.0
 
 # Install neutronics dependencies from Debian package manager
 RUN apt-get install -y \
@@ -207,12 +209,6 @@ RUN pip install numpy --upgrade
 
 # # installs python packages and nuclear data (quick as it does not overwrite existing h5 files)
 # RUN openmc_data_downloader -d nuclear_data -e all -i H3 -l ENDFB-7.1-NNDC TENDL-2019 -p neutron photon --no-overwrite
-
-# solves OSError: libXft.so.2: cannot open shared object file: No such file or directory
-RUN apt-get install libxft2 
-#libxft2:i386 lib64ncurses5
-#RUN apt install libxext6
-#RUN apt install libxext6:i386
 
 # setting enviromental varibles
 ENV OPENMC_CROSS_SECTIONS=/nuclear_data/cross_sections.xml
