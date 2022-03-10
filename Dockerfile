@@ -60,7 +60,7 @@ RUN apt-get install -y libgl1-mesa-glx \
                        apt-get clean
 
 # solves OSError: libXft.so.2: cannot open shared object file: No such file or directory
-RUN apt-get install libxft2 
+RUN apt-get install -y libxft2 
 
 # upgrading numpy version
 # RUN pip install "numpy>=1.21.4,<1.30" cython
