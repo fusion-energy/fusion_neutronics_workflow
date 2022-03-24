@@ -10,35 +10,26 @@ from spectrum_plotter import plot_spectrum_from_tally
 
 
 # defines a simple DT neutron point source
-my_source = ops.FusionPointSource(
-    coordinate = (0,0,0),
-    temperature = 20000.,
-    fuel='DT'
-)
+my_source = ops.FusionPointSource(coordinate=(0, 0, 0), temperature=20000.0, fuel="DT")
 
 # set the geometry file to use
 geometry = odw.Geometry(
-    h5m_filename='dagmc.h5m',
+    h5m_filename="dagmc.h5m",
 )
 
 # sets the material to use
 materials = odw.Materials(
-    h5m_filename='dagmc.h5m',
-    correspondence_dict={"mat1": "eurofer"}
+    h5m_filename="dagmc.h5m", correspondence_dict={"my_material": "eurofer"}
 )
 
 # creates a cell tally for neutron flux
 tally1 = odw.CellTally(
-    tally_type="neutron_flux",
-    target="mat_my_material",
-    materials=materials
+    tally_type="neutron_flux", target="my_material", materials=materials
 )
 
 # creates a cell tally for neutron spectra
 tally2 = odw.CellTally(
-    tally_type="neutron_spectra",
-    target="mat_my_material",
-    materials=materials
+    tally_type="neutron_spectra", target="my_material", materials=materials
 )
 
 tallies = openmc.Tallies([tally1, tally2])
@@ -63,7 +54,7 @@ statepoint_file = my_model.run()
 statepoint = openmc.StatePoint(filepath=statepoint_file)
 
 # gets the first tally using its name
-my_tally_1 = statepoint.get_tally(name="mat_my_material_neutron_flux")
+my_tally_1 = statepoint.get_tally(name="my_material_neutron_flux")
 
 # gets number of neutron for a 1.3 mega joule shot
 source_strength = otuc.find_source_strength(fusion_energy_per_second_or_per_pulse=1.3e6)
@@ -78,25 +69,25 @@ result = otuc.process_tally(
 print(f"flux per second = {result}", end="\n\n")
 
 # gets the second tally using its name
-my_tally_2 = statepoint.get_tally(name="mat_my_material_neutron_spectra")
+my_tally_2 = statepoint.get_tally(name="my_material_neutron_spectra")
 
 # returns the tally converted to MeV, scaled and normalisation for source strength
 result = otuc.process_spectra_tally(
     tally=my_tally_2,
     required_units="centimeter / second",
-    required_energy_units='MeV',
-    source_strength=source_strength
+    required_energy_units="MeV",
+    source_strength=source_strength,
 )
 
 # creates a matplotlib figure of the tally
 spectrum_plot = plot_spectrum_from_tally(
-    spectrum={'neutron spectra tally': my_tally_2},
+    spectrum={"neutron spectra tally": my_tally_2},
     x_label="Energy [MeV]",
     y_label="Flux [n/cm^2s]",
     x_scale="log",
     y_scale="log",
     title="neutron spectra tally",
-    filename='my_spectrum_plot.png'
+    filename="my_spectrum_plot.png",
 )
 
-print('image saved as my_spectrum_plot.png')
+print("image saved as my_spectrum_plot.png")
