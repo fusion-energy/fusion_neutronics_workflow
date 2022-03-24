@@ -93,10 +93,6 @@ Links to the packages that are utilized by the fusion-neutronics-workflow
     automated production of fusion reactor CAD models (stp and stl files) from
     parameters.
 
-    * [cad_to_h5m](https://github.com/fusion-energy/cad_to_h5m) automated
-    conversion of STP or SAT CAD files to h5m files compatible with DAGMC
-    enabled particle transport codes.
-
     * [stl_to_h5m](https://github.com/fusion-energy/stl_to_h5m) automated
     conversion of STL files to h5m files compatible with DAGMC enabled
     particle transport codes.
