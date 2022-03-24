@@ -193,7 +193,7 @@ RUN cd /opt && \
     pip install -e .[test]
 
 
-RUN conda install -c fusion-energy -c cadquery -c conda-forge paramak_develop
+RUN conda install -c fusion-energy -c cadquery -c conda-forge paramak
 
 # pip installs latest versions of analysis packages
 RUN pip install openmc-dagmc-wrapper
