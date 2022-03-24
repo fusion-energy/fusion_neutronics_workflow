@@ -20,14 +20,14 @@ geometry = odw.Geometry(
 materials = odw.Materials(
     h5m_filename=geometry.h5m_filename,
     correspondence_dict={
-        "mat_plasma": "DT_plasma",
-        "mat_inboard_tf_coils": "copper",
-        "mat_center_column_shield": "tungsten",
-        "mat_firstwall": "tungsten",
-        "mat_blanket": "Li4SiO4",
-        "mat_blanket_rear_wall": "eurofer",
-        "mat_divertor_upper": "tungsten",
-        "mat_divertor_lower": "tungsten",
+        "plasma": "DT_plasma",
+        "inboard_tf_coils": "copper",
+        "center_column_shield": "tungsten",
+        "firstwall": "tungsten",
+        "blanket": "Li4SiO4",
+        "blanket_rear_wall": "eurofer",
+        "divertor_upper": "tungsten",
+        "divertor_lower": "tungsten",
     }
 )
 

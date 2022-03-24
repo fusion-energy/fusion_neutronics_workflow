@@ -24,7 +24,7 @@ geometry = odw.Geometry(
 # sets the material to use
 materials = odw.Materials(
     h5m_filename='dagmc.h5m',
-    correspondence_dict={"mat_my_material": "eurofer"}
+    correspondence_dict={"mat1": "eurofer"}
 )
 
 # creates a cell tally for neutron flux
