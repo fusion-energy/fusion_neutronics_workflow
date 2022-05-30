@@ -32,7 +32,7 @@
 # docker build -t fusion-neutronics-workflow:embree --build-arg compile_cores=7 --build-arg build_double_down=ON --build-arg include_avx=true .
 
 # base image contains nuclear data
-FROM ghcr.io/openmc-data-storage/miniconda3_4.9.2_endfb-7.1_nndc_tendl_2019:latest
+FROM continuumio/miniconda3:4.10.3
 
 ARG compile_cores=1
 ARG include_avx=true
@@ -193,7 +193,7 @@ RUN cd /opt && \
     pip install -e .[test]
 
 
-RUN conda install -c fusion-energy -c cadquery -c conda-forge paramak
+RUN conda install -c fusion-energy -c cadquery -c conda-forge paramak>=0.8.1
 
 # pip installs latest versions of analysis packages
 RUN pip install openmc-dagmc-wrapper
@@ -204,6 +204,9 @@ RUN pip install regular_mesh_plotter
 RUN pip install openmc_data_downloader
 RUN pip install openmc_data
 
+# downloads nuclear data
+RUN download_nndc
+
 # solves binary incompatabilitiy error
 RUN pip install numpy --upgrade
 
@@ -212,7 +215,7 @@ RUN pip install numpy --upgrade
 # RUN openmc_data_downloader -d nuclear_data -e all -i H3 -l ENDFB-7.1-NNDC TENDL-2019 -p neutron photon --no-overwrite
 
 # setting enviromental varibles
-ENV OPENMC_CROSS_SECTIONS=/nuclear_data/cross_sections.xml
+ENV OPENMC_CROSS_SECTIONS=/nndc-b7.1-hdf5/endfb71_hdf5/cross_sections.xml
 ENV PATH="/MOAB/build/bin:${PATH}"
 ENV PATH="/DAGMC/bin:${PATH}"
 
