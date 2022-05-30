@@ -202,6 +202,7 @@ RUN pip install openmc_tally_unit_converter
 RUN pip install spectrum_plotter
 RUN pip install regular_mesh_plotter
 RUN pip install openmc_data_downloader
+RUN pip install openmc_data
 
 # solves binary incompatabilitiy error
 RUN pip install numpy --upgrade
