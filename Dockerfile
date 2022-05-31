@@ -163,7 +163,7 @@ RUN if [ "$build_double_down" = "ON" ] ; \
 # Clone and install DAGMC
 RUN mkdir DAGMC && \
     cd DAGMC && \
-    git clone --single-branch --branch v3.2.1 --depth 1 https://github.com/svalinn/DAGMC.git && \
+    git clone --single-branch --branch v3.2.2 --depth 1 https://github.com/svalinn/DAGMC.git && \
     mkdir build && \
     cd build && \
     cmake ../DAGMC -DBUILD_TALLY=ON \
@@ -192,26 +192,13 @@ RUN cd /opt && \
     cd ..  && \
     pip install -e .[test]
 
-
-RUN conda install -c fusion-energy -c cadquery -c conda-forge paramak>=0.8.1
-
-# pip installs latest versions of analysis packages
-RUN pip install openmc-dagmc-wrapper
-RUN pip install openmc-plasma-source
-RUN pip install openmc_tally_unit_converter
-RUN pip install spectrum_plotter
-RUN pip install regular_mesh_plotter
-RUN pip install openmc_data_downloader
-RUN pip install openmc_data
+COPY environment.yml .
+RUN conda env update -f environment.yml
 
 # downloads nuclear data
 RUN download_nndc
 
-# solves binary incompatabilitiy error
-RUN pip install numpy --upgrade
-
-
-# # installs python packages and nuclear data (quick as it does not overwrite existing h5 files)
+# this is an optional way to install python packages and nuclear data (quick as it does not overwrite existing h5 files)
 # RUN openmc_data_downloader -d nuclear_data -e all -i H3 -l ENDFB-7.1-NNDC TENDL-2019 -p neutron photon --no-overwrite
 
 # setting enviromental varibles
