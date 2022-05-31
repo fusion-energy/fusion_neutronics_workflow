@@ -13,13 +13,13 @@ geometry = odw.Geometry(h5m_filename='dagmc.h5m')
 # these materials are input as strings so they will be looked up in the
 # neutronics material maker package
 material_tag_to_material_dict = {
-    "mat_inboard_tf_coils": "copper",
-    "mat_center_column_shield": "tungsten",
-    "mat_firstwall": "tungsten",
-    "mat_blanket": "Li4SiO4",
-    "mat_blanket_rear_wall": "eurofer",
-    "mat_divertor_upper": "tungsten",
-    "mat_divertor_lower": "tungsten",
+    "inboard_tf_coils": "copper",
+    "center_column_shield": "tungsten",
+    "firstwall": "tungsten",
+    "blanket": "Li4SiO4",
+    "blanket_rear_wall": "eurofer",
+    "divertor_upper": "tungsten",
+    "divertor_lower": "tungsten",
 }
 
 materials = odw.Materials(

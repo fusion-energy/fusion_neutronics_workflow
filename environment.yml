@@ -1,0 +1,16 @@
+name: base
+channels:
+  - fusion-energy
+  - cadquery
+  - conda-forge
+dependencies:
+  - paramak>=0.8.1
+  - pip
+  - pip:
+    - openmc-dagmc-wrapper
+    - openmc-plasma-source
+    - openmc_tally_unit_converter
+    - spectrum_plotter
+    - regular_mesh_plotter
+    - openmc_data_downloader
+    - openmc_data

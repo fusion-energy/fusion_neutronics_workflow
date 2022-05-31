@@ -32,7 +32,7 @@
 # docker build -t fusion-neutronics-workflow:embree --build-arg compile_cores=7 --build-arg build_double_down=ON --build-arg include_avx=true .
 
 # base image contains nuclear data
-FROM ghcr.io/openmc-data-storage/miniconda3_4.9.2_endfb-7.1_nndc_tendl_2019:latest
+FROM continuumio/miniconda3:4.10.3
 
 ARG compile_cores=1
 ARG include_avx=true
@@ -163,7 +163,7 @@ RUN if [ "$build_double_down" = "ON" ] ; \
 # Clone and install DAGMC
 RUN mkdir DAGMC && \
     cd DAGMC && \
-    git clone --single-branch --branch v3.2.1 --depth 1 https://github.com/svalinn/DAGMC.git && \
+    git clone --single-branch --branch v3.2.2 --depth 1 https://github.com/svalinn/DAGMC.git && \
     mkdir build && \
     cd build && \
     cmake ../DAGMC -DBUILD_TALLY=ON \
@@ -192,26 +192,18 @@ RUN cd /opt && \
     cd ..  && \
     pip install -e .[test]
 
+COPY environment.yml .
+RUN conda env update -f environment.yml
 
-RUN conda install -c fusion-energy -c cadquery -c conda-forge paramak_develop
+# downloads nuclear data from zip file an uncompress
+# RUN download_nndc
 
-# pip installs latest versions of analysis packages
-RUN pip install openmc-dagmc-wrapper
-RUN pip install openmc-plasma-source
-RUN pip install openmc_tally_unit_converter
-RUN pip install spectrum_plotter
-RUN pip install regular_mesh_plotter
-RUN pip install openmc_data_downloader
-
-# solves binary incompatabilitiy error
-RUN pip install numpy --upgrade
-
-
-# # installs python packages and nuclear data (quick as it does not overwrite existing h5 files)
-# RUN openmc_data_downloader -d nuclear_data -e all -i H3 -l ENDFB-7.1-NNDC TENDL-2019 -p neutron photon --no-overwrite
+# this is an optional way to install python packages and nuclear data (quick as it does not overwrite existing h5 files)
+RUN openmc_data_downloader -d nuclear_data -e all -i H3 -l ENDFB-7.1-NNDC TENDL-2019 -p neutron photon --no-overwrite
 
 # setting enviromental varibles
 ENV OPENMC_CROSS_SECTIONS=/nuclear_data/cross_sections.xml
+# ENV OPENMC_CROSS_SECTIONS=/nndc-b7.1-hdf5/endfb71_hdf5/cross_sections.xml
 ENV PATH="/MOAB/build/bin:${PATH}"
 ENV PATH="/DAGMC/bin:${PATH}"
 
