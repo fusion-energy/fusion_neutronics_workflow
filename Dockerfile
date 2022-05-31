@@ -195,14 +195,15 @@ RUN cd /opt && \
 COPY environment.yml .
 RUN conda env update -f environment.yml
 
-# downloads nuclear data
-RUN download_nndc
+# downloads nuclear data from zip file an uncompress
+# RUN download_nndc
 
 # this is an optional way to install python packages and nuclear data (quick as it does not overwrite existing h5 files)
-# RUN openmc_data_downloader -d nuclear_data -e all -i H3 -l ENDFB-7.1-NNDC TENDL-2019 -p neutron photon --no-overwrite
+RUN openmc_data_downloader -d nuclear_data -e all -i H3 -l ENDFB-7.1-NNDC TENDL-2019 -p neutron photon --no-overwrite
 
 # setting enviromental varibles
-ENV OPENMC_CROSS_SECTIONS=/nndc-b7.1-hdf5/endfb71_hdf5/cross_sections.xml
+ENV OPENMC_CROSS_SECTIONS=/nuclear_data/cross_sections.xml
+# ENV OPENMC_CROSS_SECTIONS=/nndc-b7.1-hdf5/endfb71_hdf5/cross_sections.xml
 ENV PATH="/MOAB/build/bin:${PATH}"
 ENV PATH="/DAGMC/bin:${PATH}"
 
